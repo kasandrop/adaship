@@ -7,10 +7,9 @@ import com.badlogic.gdx.assets.AssetManager;
 
 public class GameScreen implements Screen {
 
+    private final AssetManager assetManager;
     private GameController controller;
     private GameRenderer renderer;
-
-    private final AssetManager assetManager;
     private AdashipGame adashipGame;
 
     public GameScreen(AdashipGame adashipGame) {

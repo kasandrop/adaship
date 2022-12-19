@@ -10,7 +10,6 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -29,7 +28,7 @@ public class GameRenderer implements Disposable {
     private ShapeRenderer renderer;
     private OrthographicCamera hudCamera;
     private Viewport hudViewport;
-   private BitmapFont font;
+    private BitmapFont font;
     private DebugCameraController debugCameraController;
     private TextureRegion playerRegion;
     private TextureRegion obstacleRegion;

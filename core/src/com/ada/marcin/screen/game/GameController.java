@@ -18,7 +18,6 @@ public class GameController {
     private int score;
 
 
-
     // == constructors ==
     public GameController() {
         init();
@@ -49,20 +48,14 @@ public class GameController {
     }
 
 
-
     private void updatePlayer() {
 
     }
 
 
-
     private void blockPlayerFromLeavingTheWorld() {
 
     }
-
-
-
-
 
 
     private void updateScore(float delta) {

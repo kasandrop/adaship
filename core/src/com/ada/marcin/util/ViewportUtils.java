@@ -14,6 +14,9 @@ public class ViewportUtils {
 
     private static final int DEFAULT_CELL_SIZE = 1;
 
+    private ViewportUtils() {
+    }
+
     public static void drawGrid(Viewport viewport, ShapeRenderer renderer) {
         drawGrid(viewport, renderer, DEFAULT_CELL_SIZE);
     }
@@ -85,8 +88,5 @@ public class ViewportUtils {
         float yPPU = screenHeight / worldHeight;
 
         log.debug("x PPU= " + xPPU + " yPPU= " + yPPU);
-    }
-
-    private ViewportUtils() {
     }
 }

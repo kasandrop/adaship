@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class GdxUtils {
 
+    private GdxUtils() {
+    }
+
     public static void clearScreen() {
         clearScreen(Color.BLACK);
     }
@@ -18,6 +21,4 @@ public class GdxUtils {
         Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
-
-    private GdxUtils() {}
 }

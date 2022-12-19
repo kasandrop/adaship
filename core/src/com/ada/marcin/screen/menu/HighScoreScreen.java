@@ -15,9 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
@@ -32,6 +30,8 @@ public class HighScoreScreen extends ScreenAdapter {
     private Viewport viewport;
     private Stage stage;
 
+    private Skin skin;
+
     public HighScoreScreen(AdashipGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
@@ -44,28 +44,29 @@ public class HighScoreScreen extends ScreenAdapter {
 
         Gdx.input.setInputProcessor(stage);
 
+        this.skin=assetManager.get(AssetsDescriptor.UISKIN);
         initUi();
     }
 
     private void initUi() {
         Table table = new Table();
-       table.setDebug(true);
+        table.setDebug(true);
 
         TextureAtlas gamePlayAtlas = assetManager.get(AssetsDescriptor.GAME_PLAY);
-        TextureAtlas uiAtlas = assetManager.get(AssetsDescriptor.UI);
 
-     BitmapFont font = assetManager.get(AssetsDescriptor.FONT);
+
+        BitmapFont font = assetManager.get(AssetsDescriptor.FONT);
 
         TextureRegion backgroundRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
-        TextureRegion panelRegion = uiAtlas.findRegion(RegionNames.PANEL);
+
 
         table.setBackground(new TextureRegionDrawable(backgroundRegion));
 
         //label style
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
 
         //back button
-        ImageButton backButton = createButton(uiAtlas, RegionNames.BACK, RegionNames.BACK_PRESSED);
+        TextButton backButton =new TextButton("Back",skin);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -79,11 +80,11 @@ public class HighScoreScreen extends ScreenAdapter {
         buttonTable.defaults().pad(20);
         buttonTable.center();
         //background
-        buttonTable.setBackground(new TextureRegionDrawable(panelRegion));
-        //label
-        Label highScoreText = new Label("HIGHSCORE", labelStyle);
 
-        Label highScoreLabel = new Label(GameManager.INSTANCE.getHighScore(), labelStyle);
+        //label
+        Label highScoreText = new Label("HIGHSCORE", skin);
+
+        Label highScoreLabel = new Label(GameManager.INSTANCE.getHighScore(), skin);
 
         buttonTable.add(highScoreText).row();
         buttonTable.add(highScoreLabel).row();
@@ -105,12 +106,7 @@ public class HighScoreScreen extends ScreenAdapter {
         game.setScreen(new MenuScreen(game));
     }
 
-    private ImageButton createButton(TextureAtlas atlas, String upRegionName, String downRegionName) {
-        TextureRegion upRegion = atlas.findRegion(upRegionName);
-        TextureRegion downRegion = atlas.findRegion(downRegionName);
 
-        return new ImageButton(new TextureRegionDrawable(upRegion), new TextureRegionDrawable(downRegion));
-    }
 
 
     @Override
