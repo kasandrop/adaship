@@ -17,9 +17,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.awt.dnd.DragGestureListener;
 
 
 public class MenuScreen extends ScreenAdapter {
@@ -90,7 +94,8 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     private void play() {
-        game.setScreen(new GameScreen(game));
+
+       game.setScreen(new GameScreen(game));
     }
 
     private void highScore() {

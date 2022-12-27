@@ -8,6 +8,8 @@ public class GameManager {
     public static final GameManager INSTANCE = new GameManager();
     private static final String HIGH_SCORE_KEY = "highscore";
 
+    private static final int CELL_SIZE = 48;
+
     private Preferences PREFS;
 
     private int highScore;

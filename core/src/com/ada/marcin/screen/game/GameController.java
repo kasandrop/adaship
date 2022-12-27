@@ -14,7 +14,7 @@ public class GameController {
 
     private float obstacleTimer;
     private float scoreTimer;
-    private int lives = GameConfig.LIVES_START;
+
     private int score;
 
 
@@ -34,17 +34,10 @@ public class GameController {
 
     }
 
-    public int getLives() {
-        return lives;
-    }
-
-    public int getScore() {
-        return score;
-    }
 
     // == private methods ==
     private boolean isGameOver() {
-        return lives <= 0;
+        return 1 <= 5;
     }
 
 
@@ -59,12 +52,7 @@ public class GameController {
 
 
     private void updateScore(float delta) {
-        scoreTimer += delta;
 
-        if (scoreTimer >= GameConfig.SCORE_MAX_TIME) {
-            score += MathUtils.random(1, 5);
-            scoreTimer = 0.0f;
-        }
     }
 
 

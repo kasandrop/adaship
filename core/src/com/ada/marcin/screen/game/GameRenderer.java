@@ -115,21 +115,21 @@ public class GameRenderer implements Disposable {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
 
-        String livesText = "LIVES: " + controller.getLives();
-        layout.setText(font, livesText);
 
-        font.draw(batch, livesText,
-                20,
-                GameConfig.HUD_HEIGHT - layout.height
-        );
+       // layout.setText(font, livesText);
 
-        String scoreText = "SCORE: " + controller.getScore();
-        layout.setText(font, scoreText);
+//        font.draw(batch, livesText,
+//                20,
+//                GameConfig.HUD_HEIGHT - layout.height
+//        );
 
-        font.draw(batch, scoreText,
-                GameConfig.HUD_WIDTH - layout.width - 20,
-                GameConfig.HUD_HEIGHT - layout.height
-        );
+
+//        layout.setText(font, scoreText);
+//
+//        font.draw(batch, scoreText,
+//                GameConfig.HUD_WIDTH - layout.width - 20,
+//                GameConfig.HUD_HEIGHT - layout.height
+//        );
 
         batch.end();
     }
