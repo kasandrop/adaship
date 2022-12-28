@@ -1,6 +1,6 @@
 package com.ada.marcin.model;
 
-import com.ada.marcin.common.ShipByTypeNotFoundException;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

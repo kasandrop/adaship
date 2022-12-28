@@ -9,15 +9,18 @@ import com.ada.marcin.screen.ui.ShipView;
 import com.ada.marcin.screen.ui.UnitActor;
 import com.ada.marcin.util.GdxUtils;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -64,14 +67,14 @@ public class OptionsScreen extends ScreenAdapter {
         Pixmap pixmapShip = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmapShip.setColor(Color.DARK_GRAY);
         pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmap));
+        return new TextureRegion(new Texture(pixmapShip));
     }
 
     TextureRegion getUnitViewDamagedTexture() {
         Pixmap pixmapShip = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmapShip.setColor(Color.RED);
         pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmap));
+        return new TextureRegion(new Texture(pixmapShip));
     }
 
     @Override
@@ -87,8 +90,6 @@ public class OptionsScreen extends ScreenAdapter {
 
 
     private void initUi() {
-
-
 
         Table table = new Table();
         //   table.setDebug(true);
@@ -106,13 +107,13 @@ public class OptionsScreen extends ScreenAdapter {
     }
 
     private VerticalGroup getShipViews() {
-
-
         VerticalGroup verticalGroup = new VerticalGroup();
         for (Map.Entry<ShipType, ShipView> entry : this.shipViews.entrySet()) {
             //System.out.println(entry.getKey() + ":" + entry.getValue());
             verticalGroup.addActor(getContainer(entry.getValue()));
         }
+        verticalGroup.space(10);
+        verticalGroup.pad(10);
         verticalGroup.pack();
         return verticalGroup;
 
@@ -127,10 +128,10 @@ public class OptionsScreen extends ScreenAdapter {
 
     }
 
-    Container<HorizontalGroup> getContainer(ShipView  shipView){
-        Container<HorizontalGroup> container = new Container<HorizontalGroup>();
+    Container<Container<HorizontalGroup>> getContainer(ShipView  shipView){
+        Container<Container<HorizontalGroup>> container = new  Container<Container<HorizontalGroup>>();
         container.background(getContainerBackground());
-        container.size(GameConfig.CELL_SIZE * shipView.getLength());
+        container.size(GameConfig.CELL_SIZE * shipView.getLength()+shipView.getLength()*2);
         container.setActor(shipView);
         return container;
     }
@@ -193,27 +194,54 @@ public class OptionsScreen extends ScreenAdapter {
     }
 
     ShipView shipViewFactory(ShipType shipType, int length, TextureRegion unitViewDamagedTexture, TextureRegion unitViewTexture) {
-        ShipView shipView = new ShipView( shipType, length,false, Direction.Horizontal, unitViewDamagedTexture,
+        final ShipView shipView = new ShipView( shipType, length,false, Direction.Horizontal, unitViewDamagedTexture,
                 unitViewTexture);
 
         //  logger.debug("1origin x,y="+shipView.getWidth()/2+"  "+shipView.getHeight()/2);
         //  logger.debug("2origin x,y="+shipView.getMaxWidth()/2+"  "+shipView.getMaxHeight()/2);
 
+        //if event was processed return true
         shipView.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                ShipView shipView = (ShipView) event.getListenerActor();
-                shipView.setOrigin(event.getListenerActor().getWidth() / 2, event.getListenerActor().getHeight() / 2);
-                shipView.rotateBy(90);
-                logger.debug("Pointer:" + pointer + " button:" + button);
-                logger.debug("1origin x,y=" + event.getListenerActor().getWidth() / 2 + "  " + event.getListenerActor().getHeight() / 2);
+                shipView.setZIndex(100);
+                if(button== Input.Buttons.RIGHT){
+                    shipView.changeDirection();
+                 //  shipView.localToParentCoordinates(new Vector2(x,y));
+                    shipView.setOrigin(shipView.getWidth() / 2, shipView.getHeight() / 2);
+                    shipView.rotateBy(90);
+                    //logger.debug("Pointer:" + pointer + " button:" + button);
+                  //  logger.debug("1origin x,y=" +shipView.getWidth() / 2 + "  " +shipView.getHeight() / 2);
+                    return true;
+                }
+
                 return false;
+
+            }
+        });
+        shipView.addListener(new DragListener() {
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                logger.debug("diretion:::"+shipView.getDirection().toString());
+                logger.debug("x:::"+shipView.getX());
+                logger.debug("y:::"+shipView.getY());
+
+                shipView.localToParentCoordinates(new Vector2(x,y));
+                shipView.moveBy(x - shipView.getWidth() / 2, y - shipView.getHeight() / 2);
+
 
             }
         });
 
         return shipView;
     }
+
+    /*
+     public void touchDragged(InputEvent event, float x, float y, int pointer) {
+        float oldTouchY = vec.y;
+        table.localToParentCoordinates(vec.set(x, y));
+        table.moveBy(0f, vec.y - oldTouchY);
+    }
+     */
 
     private TextureRegionDrawable getWindowBackground() {
         Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGB565);

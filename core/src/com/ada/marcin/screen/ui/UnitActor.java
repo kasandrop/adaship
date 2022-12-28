@@ -35,6 +35,7 @@ public class UnitActor extends Actor {
 
     private void init() {
         setSize(GameConfig.CELL_SIZE, GameConfig.CELL_SIZE);
+
         //this listener only  for testing purpose, in production  must be removed
 //        addListener(new InputListener() {
 //
