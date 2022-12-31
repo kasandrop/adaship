@@ -42,7 +42,7 @@ public class MenuScreen extends ScreenAdapter {
         this.game = game;
         this.assetManager = game.getAssetManager();
         this.uiFactory = new UiFactory(this.assetManager);
-        this.skin=assetManager.get(AssetsDescriptor.UISKIN);
+        this.skin = assetManager.get(AssetsDescriptor.UISKIN);
 
     }
 
@@ -51,7 +51,7 @@ public class MenuScreen extends ScreenAdapter {
         Table buttonTable = uiFactory.createContainerForButtons();
 
         //play button
-        TextButton playButton = new TextButton("PLAY",skin);
+        TextButton playButton = new TextButton("PLAY", skin);
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -59,7 +59,7 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
         //high score button
-        TextButton highScoreButton = new TextButton("High Score",skin);
+        TextButton highScoreButton = new TextButton("High Score", skin);
         highScoreButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -67,7 +67,7 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
         //options
-        TextButton optionsButton = new TextButton("Options",skin);
+        TextButton optionsButton = new TextButton("Options", skin);
         optionsButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -95,7 +95,7 @@ public class MenuScreen extends ScreenAdapter {
 
     private void play() {
 
-       game.setScreen(new GameScreen(game));
+        game.setScreen(new GameScreen(game));
     }
 
     private void highScore() {

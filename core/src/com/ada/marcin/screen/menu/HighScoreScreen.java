@@ -44,7 +44,7 @@ public class HighScoreScreen extends ScreenAdapter {
 
         Gdx.input.setInputProcessor(stage);
 
-        this.skin=assetManager.get(AssetsDescriptor.UISKIN);
+        this.skin = assetManager.get(AssetsDescriptor.UISKIN);
         initUi();
     }
 
@@ -66,7 +66,7 @@ public class HighScoreScreen extends ScreenAdapter {
 
 
         //back button
-        TextButton backButton =new TextButton("Back",skin);
+        TextButton backButton = new TextButton("Back", skin);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -105,8 +105,6 @@ public class HighScoreScreen extends ScreenAdapter {
     private void back() {
         game.setScreen(new MenuScreen(game));
     }
-
-
 
 
     @Override

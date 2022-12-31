@@ -26,25 +26,25 @@ public class UiFactory {
         this.backgroundRegion = gamePlayAtlas.findRegion(RegionNames.BACKGROUND);
     }
 
-    public Table createShip(Direction direction, int length) {
-        Pixmap pixmap = new Pixmap(GameConfig.CELL_SIZE, GameConfig.CELL_SIZE, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.BROWN);
-        pixmap.fill();
-        TextureRegion region = new TextureRegion(new Texture(pixmap));
-        Table table = new Table();
-        table.pad(1);
-
-        for (int i = 0; i < length; i++) {
-            UnitActor unitActor = new UnitActor(region);
-            table.add(unitActor);
-            if (Direction.Vertical == direction) {
-                table.row();
-            }
-
-
-        }
-        return table;
-    }
+//    public Table createShip(Direction direction, int length) {
+//        Pixmap pixmap = new Pixmap(GameConfig.CELL_SIZE, GameConfig.CELL_SIZE, Pixmap.Format.RGBA8888);
+//        pixmap.setColor(Color.BROWN);
+//        pixmap.fill();
+//        TextureRegion region = new TextureRegion(new Texture(pixmap));
+//        Table table = new Table();
+//        table.pad(1);
+//
+//        for (int i = 0; i < length; i++) {
+//            ShipUnit unitActor = new ShipUnit(region);
+//            table.add(unitActor);
+//            if (Direction.Vertical == direction) {
+//                table.row();
+//            }
+//
+//
+//        }
+//        return table;
+//    }
 
 //    public ShipView createShipView(){
 //
