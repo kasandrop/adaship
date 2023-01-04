@@ -14,9 +14,8 @@ public class UnitActor extends Actor {
 
     public static final Logger logger = new Logger(UnitActor.class.getName(), Logger.DEBUG);
 
-    protected TextureRegion regionNotDamaged;
-    protected TextureRegion regionDamaged;
     protected TextureRegion regionCurrent;
+
 
 
     public UnitActor(){

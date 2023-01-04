@@ -1,5 +1,6 @@
 package com.ada.marcin.screen.ui;
 
+import com.ada.marcin.model.Coordinate;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,18 +9,17 @@ import com.badlogic.gdx.utils.Logger;
 
 public class GridUnit  extends UnitActor {
 
-    private int row;
-    private int column;
+
+    private Coordinate  coordinate;
 
     public static final Logger logger = new Logger(GridUnit.class.getName(), Logger.DEBUG);
-    public GridUnit(TextureRegion textureRegion,int row,int column){
+    public GridUnit(TextureRegion textureRegion,int x,int y){
         this.regionCurrent=textureRegion;
-        this.row=row;
-        this.column=column;
+        this.coordinate=new Coordinate(x,y);
 
     }
 
-    public void chengecolor() {
+    public void changeColor() {
         this.regionCurrent=getUnitViewTexture();
     }
 
@@ -30,14 +30,15 @@ public class GridUnit  extends UnitActor {
         return new TextureRegion(new Texture(pixmapShip));
     }
 
-    public int getRow() {
-        return row;
+    public int getGridX() {
+
+        return coordinate.getX();
     }
 
-    public int getColumn() {
-        return column;
+    public int getGridY() {
+        return coordinate.getY();
     }
-    public String getPosition(){
-       return this.getRow()+"-"+getColumn();
+    public Coordinate getCoordinate(){
+       return this.coordinate;
     }
 }

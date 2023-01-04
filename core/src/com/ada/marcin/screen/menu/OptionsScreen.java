@@ -3,6 +3,7 @@ package com.ada.marcin.screen.menu;
 import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
 import com.ada.marcin.config.GameConfig;
+import com.ada.marcin.model.Board;
 import com.ada.marcin.model.Direction;
 import com.ada.marcin.model.ShipType;
 import com.ada.marcin.screen.ui.GridUnit;
@@ -21,8 +22,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -42,6 +41,8 @@ public class OptionsScreen extends ScreenAdapter {
     private final AssetManager assetManager;
     private Viewport viewport;
     private Stage stage;
+
+    private Board board;
 
 
     private static Vector2 vector2 = new Vector2();
@@ -78,6 +79,13 @@ public class OptionsScreen extends ScreenAdapter {
         return new TextureRegion(new Texture(pixmapShip));
     }
 
+    TextureRegion getUnitViewReadyTexture(){
+        Pixmap pixmapShip = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmapShip.setColor(Color.GREEN);
+        pixmapShip.fill();
+        return new TextureRegion(new Texture(pixmapShip));
+    }
+
     TextureRegion getUnitViewDamagedTexture() {
         Pixmap pixmapShip = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmapShip.setColor(Color.RED);
@@ -87,6 +95,7 @@ public class OptionsScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        board=new Board(GameConfig.sizeX,GameConfig.sizeY);
         viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
         stage = new Stage(viewport, game.getBatch());
 
@@ -119,8 +128,10 @@ public class OptionsScreen extends ScreenAdapter {
             shipView.addListener(new InputListener() {
                                      @Override
                                      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                                         shipView.setZIndex(10000);
-                                         shipView.deletePoints();
+                                        logger.debug("touchDown event  button:"+button);
+                                         logger.debug("touchDown event  on ViewShip:"+shipView.getShipType().toString());
+                                         shipView.setZIndex(1000000);
+
                                          if (button == Input.Buttons.RIGHT) {
                                              //  shipView.localToParentCoordinates(new Vector2(x,y));
                                              //  shipView.setOrigin(shipView.getWidth() / 2, shipView.getHeight() / 2);
@@ -129,23 +140,27 @@ public class OptionsScreen extends ScreenAdapter {
                                              //  logger.debug("1origin x,y=" +shipView.getWidth() / 2 + "  " +shipView.getHeight() / 2);
                                              return false;
                                          }
+
+                                         board.removeShipFromTheGrid(shipView);
+                                         shipView.makeShipTrain();
 //  returning true means touchUp or drag is going to be handled
                                          return true;
 
                                      }
 
 
-                //Ship is built of shipUnits   When user drops on the grid a ship event is raised :touchUp. That event is raised
-                // on the ViewShip.  I calculate here a  middle point of each unitActor.  Carrier for example consists of 5 unitActors
-                // and will have 5 middle points (These are  originX and originY built-in variable of the actor class)
-                //Because all actors coordinates are relative to  its parent .  I translate them to be relative to the stage (root group)
-                //Next, I am finding actors which my ship overlaps (To be precise the deepest actor in the stage hierarchy which contains
-                // the middle point  (originX,originY)
-                // These found actors   are  cells of the table which my ship overlaps.
-                // I use them for 1) aligning a ship
-                //              2) remembering a position on the board
+                                     //Ship is built of shipUnits   When user drops on the grid a ship event is raised :touchUp. That event is raised
+                                     // on the ViewShip.  I calculate here a  middle point of each unitActor.  Carrier for example consists of 5 unitActors
+                                     // and will have 5 middle points (These are  originX and originY built-in variable of the actor class)
+                                     //Because all actors coordinates are relative to  its parent .  I translate them to be relative to the stage (root group)
+                                     //Next, I am finding actors which my ship overlaps (To be precise the deepest actor in the stage hierarchy which contains
+                                     // the middle point  (originX,originY)
+                                     // These found actors   are  cells of the table which my ship overlaps.
+                                     // I use them for 1) aligning a ship
+                                     //              2) remembering a position on the board
                                      @Override
                                      public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                                        logger.debug("touchUp event");
                                          SnapshotArray<Actor> actors = shipView.getShipUnits();
                                          ArrayList<GridUnit> gridUnits = new ArrayList<>();
                                          Stage myStage = event.getStage();
@@ -179,39 +194,45 @@ public class OptionsScreen extends ScreenAdapter {
                                          for (GridUnit gridUnit : gridUnits) {
 
                                              if (gridUnit == null) {
-                                                // logger.debug("actor is null");
+                                                 // logger.debug("actor is null");
                                                  return;
                                              }
 
-                                           //  logger.debug(gridUnit.toString());
+                                             //  logger.debug(gridUnit.toString());
                                              //for testing purposes i mark grid which contains the ship
-                                           //  ((GridUnit) gridUnit).chengecolor();// WOW i have enough on that stage
-                                             shipView.addPoints(gridUnit.getPosition());
+                                             //  ((GridUnit) gridUnit).chengecolor();
+
+                                             shipView.addCoordinate(gridUnit.getCoordinate());
 
                                          }
                                          //aligning  a ship  (converting stage position of the ship to a local one.
                                          //Actor position is  relative to its parent.
 
-                                         GridUnit   firstGridUnit;
+                                         GridUnit firstGridUnit;
 
                                          //logger.debug("Direction:"+shipView.getDirection().toString()+"POSITION:"+shipView.getHorizontalGroup().getX()+" y:"+shipView.getHorizontalGroup().getY());
                                          //together with rotation first child becomes the last one and vice versa
 //                                         if (shipView.getRotation()%180.0f>1){
 //                                                firstGridUnit=gridUnits.get(shipView.getLength()-1);
 //                                         }else{
-                                              firstGridUnit=gridUnits.get(0);
+                                         firstGridUnit = gridUnits.get(0);
 //                                         }
-logger.debug("Rotation:"+shipView.getRotation());
+                                         logger.debug("Rotation:" + shipView.getRotation());
 
 
-
-                                         vector2=firstGridUnit.localToStageCoordinates(vector2.setZero());
+                                         vector2 = firstGridUnit.localToStageCoordinates(vector2.setZero());
                                          event.getStage().addActor(shipView);
 
-                                         shipView.setPositionAlign(vector2.x,vector2.y);
+                                         shipView.setPositionAlign(vector2.x, vector2.y);
 
                                          shipView.setZIndex(1000);
                                          logger.debug(shipView.printPoints());
+                                         logger.debug("_______________");
+                                         if(board.placeShipOnTheGrid(shipView)){
+                                              shipView.makeShipReady();
+                                         }
+
+                                         //logger.debug("Coordinates:"+board.isPlacementAllowed(shipView.getPoints())+"");
 
                                      }
 
@@ -247,11 +268,11 @@ logger.debug("Rotation:"+shipView.getRotation());
     }
 
     private void initShipsViews() {
-        this.shipViews.put(ShipType.PatrolBoat, shipViewFactory(ShipType.PatrolBoat, 2, getUnitViewDamagedTexture(), getUnitViewTexture()));
-        this.shipViews.put(ShipType.Submarine, shipViewFactory(ShipType.Submarine, 3, getUnitViewDamagedTexture(), getUnitViewTexture()));
-        this.shipViews.put(ShipType.Destroyer, shipViewFactory(ShipType.Destroyer, 3, getUnitViewDamagedTexture(), getUnitViewTexture()));
-        this.shipViews.put(ShipType.Battleship, shipViewFactory(ShipType.Battleship, 4, getUnitViewDamagedTexture(), getUnitViewTexture()));
-        this.shipViews.put(ShipType.Carrier, shipViewFactory(ShipType.Carrier, 5, getUnitViewDamagedTexture(), getUnitViewTexture()));
+        this.shipViews.put(ShipType.PatrolBoat, shipViewFactory(ShipType.PatrolBoat, 2, getUnitViewDamagedTexture(), getUnitViewTexture(),getUnitViewReadyTexture()));
+        this.shipViews.put(ShipType.Submarine, shipViewFactory(ShipType.Submarine, 3, getUnitViewDamagedTexture(), getUnitViewTexture(),getUnitViewReadyTexture()));
+        this.shipViews.put(ShipType.Destroyer, shipViewFactory(ShipType.Destroyer, 3, getUnitViewDamagedTexture(), getUnitViewTexture(),getUnitViewReadyTexture()));
+        this.shipViews.put(ShipType.Battleship, shipViewFactory(ShipType.Battleship, 4, getUnitViewDamagedTexture(), getUnitViewTexture(),getUnitViewReadyTexture()));
+        this.shipViews.put(ShipType.Carrier, shipViewFactory(ShipType.Carrier, 5, getUnitViewDamagedTexture(), getUnitViewTexture(),getUnitViewReadyTexture()));
 
 
     }
@@ -281,32 +302,32 @@ logger.debug("Rotation:"+shipView.getRotation());
 
                     table.add(label).pad(1);
                 } else {
-                    GridUnit unitActor = new GridUnit(getGridViewTexture(),j,i);
+                    GridUnit unitActor = new GridUnit(getGridViewTexture(), j, i);
                     unitActor.setTouchable(Touchable.enabled);
                     unitActor.addListener(new InputListener() {
 
 
                         @Override
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                            logger.debug(event.toString() + " x:" + x+"y: "+y );
+                            logger.debug(event.toString() + " x:" + x + "y: " + y);
                             return true;
                         }
 
                         @Override
                         public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                    //        logger.debug(event.toString() + " " + x);
+                            //        logger.debug(event.toString() + " " + x);
                             super.touchDragged(event, x, y, pointer);
                         }
 
                         @Override
                         public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                       //     logger.debug(event.toString() + "x: " + x + "y: " + y);
+                            //     logger.debug(event.toString() + "x: " + x + "y: " + y);
 
                         }
 
                         @Override
                         public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                         //   logger.debug(event.toString() + " " + x);
+                            //   logger.debug(event.toString() + " " + x);
                             super.exit(event, x, y, pointer, toActor);
 
                         }
@@ -320,9 +341,10 @@ logger.debug("Rotation:"+shipView.getRotation());
 
     }
 
-    ShipView shipViewFactory(ShipType shipType, int length, TextureRegion unitViewDamagedTexture, TextureRegion unitViewTexture) {
+    ShipView shipViewFactory(ShipType shipType, int length, TextureRegion unitViewDamagedTexture,
+                             TextureRegion unitViewTexture,TextureRegion regionReady) {
         return new ShipView(shipType, length, false, Direction.Horizontal, unitViewDamagedTexture,
-                unitViewTexture);
+                unitViewTexture,regionReady);
 
 
     }

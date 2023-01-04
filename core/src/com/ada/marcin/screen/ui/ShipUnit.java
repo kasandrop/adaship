@@ -1,5 +1,6 @@
 package com.ada.marcin.screen.ui;
 
+import com.ada.marcin.common.RegionTextureNotSetException;
 import com.ada.marcin.config.GameConfig;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,24 +8,46 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Logger;
 
-public class ShipUnit  extends  UnitActor {
+public class ShipUnit extends UnitActor {
+    protected TextureRegion regionNotDamaged;
+    protected TextureRegion regionDamaged;
+
+    //when placed correctly inside a grid
+    protected TextureRegion regionReady;
 
 
     public static final Logger logger = new Logger(ShipUnit.class.getName(), Logger.DEBUG);
 
-    public ShipUnit(TextureRegion regionDamaged, TextureRegion regionNotDamaged) {
+    public ShipUnit(TextureRegion regionDamaged, TextureRegion regionNotDamaged, TextureRegion regionReady) {
         this.regionNotDamaged = regionNotDamaged;
         this.regionDamaged = regionDamaged;
         this.regionCurrent = regionNotDamaged;
+        this.regionReady = regionReady;
     }
 
     public void setFire() {
-        if(this.regionDamaged==null || this.regionNotDamaged==null){
-            logger.error("TextureRegion is not set");
-            return;
+        if (this.regionDamaged == null && this.regionNotDamaged == null) {
+            throw new RegionTextureNotSetException("TextureRegion is not set.");
         }
         this.regionCurrent = regionDamaged;
     }
 
+    public void showAsReady() {
+        if (this.regionReady == null) {
+            throw new RegionTextureNotSetException("TextureRegion is not set.");
+        }
+        this.regionCurrent = regionReady;
+    }
 
+
+    public void showAsTraining() {
+        if (this.regionCurrent == this.regionNotDamaged) {
+            return;
+        }
+        if (this.regionNotDamaged == null) {
+            throw new RegionTextureNotSetException("TextureRegion is not set.");
+        }
+        this.regionCurrent = regionNotDamaged;
+
+    }
 }

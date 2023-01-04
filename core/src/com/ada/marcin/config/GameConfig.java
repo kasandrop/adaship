@@ -5,6 +5,11 @@ public class GameConfig {
 
 
     public static final int CELL_SIZE=42;
+
+    //amount of columns in a board
+    public static final int sizeX=10;
+    //amount of rows in a board
+    public static final int sizeY=10;
     public static final float HUD_WIDTH = 800f; // world units
     public static final float HUD_HEIGHT = 800f; // world units
 
