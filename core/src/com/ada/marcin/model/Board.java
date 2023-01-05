@@ -63,12 +63,12 @@ public class Board {
             xMin=xMin-1;
             xMax=xMax+1;
             xMin= Math.max(xMin, 1);
-            xMax= Math.min(xMax, 10);
+            xMax= Math.min(xMax, this.columns);
 
             int yMin=y-1;
             int yMax=y+1;
             yMin= Math.max(yMin, 1);
-            yMax= Math.min(yMax, 10);
+            yMax= Math.min(yMax, this.rows);
 
             for(int yy=yMin;yy<=yMax;yy++){logger.debug("\n");
                 for (int xx=xMin;xx<=xMax;xx++ ) {
@@ -95,12 +95,12 @@ public class Board {
             yMin=yMin-1;
             yMax=yMax+1;
             yMin= Math.max(yMin, 1);
-            yMax= Math.min(yMax, 10);
+            yMax= Math.min(yMax, this.columns);
 
             int xMin=x-1;
             int xMax=x+1;
             xMin= Math.max(xMin, 1);
-            xMax= Math.min(xMax, 10);
+            xMax= Math.min(xMax, this.rows);
 
             for(int yy=yMin;yy<=yMax;yy++){logger.debug("\n");
                 for (int xx=xMin;xx<=xMax;xx++ ) {

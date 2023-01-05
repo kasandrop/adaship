@@ -7,7 +7,7 @@ import java.util.List;
 public class Ship {
 
     private final int length;
-    private ShipType shipType;
+    private int shipType;
     private ArrayList<String> points = new ArrayList<String>();
     private ArrayList<Boolean> damagedElements = new ArrayList<Boolean>();
 
@@ -27,7 +27,7 @@ public class Ship {
     private boolean isOnTheBoard;
 
 
-    public Ship(ShipType name, int length, Direction direction) {
+    public Ship(int name, int length, Direction direction) {
         this.shipType = name;
         this.length = length;
         this.direction = direction;
@@ -105,7 +105,7 @@ public class Ship {
         return y;
     }
 
-    public ShipType getShip() {
+    public int getShip() {
         return this.shipType;
     }
 

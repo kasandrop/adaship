@@ -1,5 +1,6 @@
 package com.ada.marcin.model;
 
+/*
 public enum ShipType {
     PatrolBoat(2),
     Submarine(3),
@@ -16,3 +17,4 @@ public enum ShipType {
         return this.length;
     }
 }
+*/

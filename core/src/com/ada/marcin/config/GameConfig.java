@@ -14,7 +14,7 @@ public class GameConfig {
 
     private int boardWidth;
     private int boardHeight;
-    private final ArrayList<Boat> boats=new ArrayList<>();
+    private final List<Boat> boats=new ArrayList<>();
 
 
     public static GameConfig getInstance() {

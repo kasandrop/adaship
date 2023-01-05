@@ -45,6 +45,8 @@ public class MenuScreen extends ScreenAdapter {
 
         //play button
         TextButton playButton = new TextButton("PLAY", skin);
+        playButton.getLabel().setFontScale(2, 2);
+        playButton.pad(20) ;
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -60,21 +62,33 @@ public class MenuScreen extends ScreenAdapter {
             }
         });
         //options
-        TextButton optionsButton = new TextButton("Options", skin);
-        optionsButton.addListener(new ChangeListener() {
+        TextButton player1Button = new TextButton("Player 1. Set up the game", skin);
+        player1Button.getLabel().setFontScale(2, 2);
+        player1Button.pad(20) ;
+        player1Button.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                options();
+                setUpPlayer1();
             }
         });
         //quite button
 
+        TextButton player2Button = new TextButton("Player 2. Set up the game", skin);
+        player2Button.getLabel().setFontScale(2, 2);
+        player2Button.pad(20) ;
+        player2Button.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                setUpPlayer2();
+            }
+        });
+
         //setup table
 
-        buttonTable.add(playButton).row();
-        buttonTable.add(highScoreButton).row();
-        buttonTable.add(optionsButton).row();
-
+        buttonTable.add(playButton).width(400).row();
+       // buttonTable.add(player2Button).row();
+        buttonTable.add(player1Button).width(400).row();
+        buttonTable.add(player2Button).width(400).row();
 
         table.add(buttonTable);
 
@@ -95,8 +109,13 @@ public class MenuScreen extends ScreenAdapter {
         game.setScreen(new HighScoreScreen(game));
     }
 
-    private void options() {
-        logger.debug("options()");
+    private void setUpPlayer1() {
+        logger.debug("setUpPlayer1()");
+        game.setScreen(new OptionsScreen(game));
+    }
+
+    private void setUpPlayer2() {
+        logger.debug("setUpPlayer2()");
         game.setScreen(new OptionsScreen(game));
     }
 

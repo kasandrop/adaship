@@ -2,7 +2,6 @@ package com.ada.marcin.screen.ui;
 
 import com.ada.marcin.model.Coordinate;
 import com.ada.marcin.model.Direction;
-import com.ada.marcin.model.ShipType;
 import com.ada.marcin.screen.menu.OptionsScreen;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -21,6 +20,8 @@ public class ShipView extends Container<HorizontalGroup> {
 
     //avoiding creation of these  objects just by caching one. GC is time-consuming;
     private static Vector2 vector2 = new Vector2();
+
+    private String name;
     private boolean isOnTheBoard;
 
     private final ArrayList<Coordinate> coordinates = new ArrayList<>();
@@ -33,36 +34,41 @@ public class ShipView extends Container<HorizontalGroup> {
 
     private TextureRegion regionReady;
 
-    private ShipType shipType;
-    public static final Logger logger = new Logger(OptionsScreen.class.getName(), Logger.DEBUG);
+    private int boatIDX;
+    public static final Logger logger = new Logger(OptionsScreen.class.getName(),
+            Logger.DEBUG);
 
     //shipview when was extended directly from Horizontalgroup it did not rotate properly
 
     /**
-     *
-     * @param shipType  type of the ship
-     * @param length    length of the ship
-     * @param isOnTheBoard  if the ship was placed successfully on the grid
-     * @param direction    Horizontal or Vertical
-     * @param regionDamaged   how to display damaged Unit of the ship
+     * @param boatIDX          type of the ship
+     * @param length           length of the ship
+     * @param name             if the ship was placed successfully on the grid
+     * @param direction        Horizontal or Vertical
+     * @param regionDamaged    how to display damaged Unit of the ship
      * @param regionNotDamaged how to display ship
-     * @param regionReady  how to display ship after it was placed successfully on the grid
+     * @param regionReady      how to display ship after it was placed successfully on the grid
      */
-    public ShipView(ShipType shipType, int length, boolean isOnTheBoard, Direction direction, TextureRegion regionDamaged, TextureRegion regionNotDamaged,TextureRegion  regionReady) {
+    public ShipView(int boatIDX,
+                    int length,
+                    String name,
+                    Direction direction,
+                    TextureRegion regionDamaged,
+                    TextureRegion regionNotDamaged,
+                    TextureRegion regionReady) {
         super();
         this.horizontalGroup = new HorizontalGroup();
         this.horizontalGroup.space(2f);
         this.setTouchable(Touchable.childrenOnly);
         this.setTransform(true);
-        this.shipType = shipType;
+        this.boatIDX = boatIDX;
         this.length = length;
-        this.isOnTheBoard = isOnTheBoard;
+        this.name = name;
         this.direction = direction;
         this.regionNotDamaged = regionNotDamaged;
         this.regionDamaged = regionDamaged;
-        this.regionReady=regionReady;
+        this.regionReady = regionReady;
         //height of the group sum of the row heights
-
 
         init();
     }
@@ -70,17 +76,18 @@ public class ShipView extends Container<HorizontalGroup> {
 
     private void init() {
         for (int i = 0; i < this.length; i++) {
-            UnitActor shipUnit = new ShipUnit(regionDamaged, regionNotDamaged,regionReady);
-
+            UnitActor shipUnit = new ShipUnit(regionDamaged,
+                    regionNotDamaged,
+                    regionReady);
             this.horizontalGroup.addActor(shipUnit);
         }
-
-
         this.horizontalGroup.setDebug(true);
         this.horizontalGroup.pack();
-
         this.setActor(this.horizontalGroup);
-        this.setBounds(0, 0, this.horizontalGroup.getWidth(), this.horizontalGroup.getHeight());
+        this.setBounds(0,
+                0,
+                this.horizontalGroup.getWidth(),
+                this.horizontalGroup.getHeight());
         this.horizontalGroup.setOrigin(this.horizontalGroup.getWidth() / 2,
                 this.horizontalGroup.getHeight() / 2);
 
@@ -91,30 +98,34 @@ public class ShipView extends Container<HorizontalGroup> {
     }
 
 
-
     /*
     when dropping a ship on the layout function it is going to be nicely align to the grid, thanks to that function
      */
-    public void setPositionAlign(float x, float y) {
-        if(direction==Direction.Horizontal){
-            float positionY=y-(((float)this.length-1)/2)*(2+this.horizontalGroup.getChild(0).getHeight());
-            super.setPosition(x-1,positionY -1);
-        }else{
-            float positionX=x-(((float)this.length-1)/2)*(2+this.horizontalGroup.getChild(0).getWidth());
-            super.setPosition(positionX-1,y-1);
+    public void setPositionAlign(float x,
+                                 float y) {
+        if (direction == Direction.Horizontal) {
+            float positionY = y - (((float) this.length - 1) / 2) * (2 + this.horizontalGroup.getChild(0)
+                    .getHeight());
+            super.setPosition(x - 1,
+                    positionY - 1);
+        } else {
+            float positionX = x - (((float) this.length - 1) / 2) * (2 + this.horizontalGroup.getChild(0)
+                    .getWidth());
+            super.setPosition(positionX - 1,
+                    y - 1);
         }
 
 
     }
 
     /**
-     *  Set texture of the Ship  as green. Indication that a ship is   placed properly in the grid.
+     * Set texture of the Ship  as green. Indication that a ship is   placed properly in the grid.
      */
-    public void makeShipReady(){
-        this.isOnTheBoard=true;
-        SnapshotArray<Actor>children= this.horizontalGroup.getChildren();
+    public void makeShipReady() {
+        this.isOnTheBoard = true;
+        SnapshotArray<Actor> children = this.horizontalGroup.getChildren();
         //libgdx's SnapshotArray can be modified during iteration
-        for (Actor actor: this.horizontalGroup.getChildren()) {
+        for (Actor actor : this.horizontalGroup.getChildren()) {
             ShipUnit shipUnit = (ShipUnit) actor;
             shipUnit.showAsReady();
         }
@@ -123,11 +134,11 @@ public class ShipView extends Container<HorizontalGroup> {
     /**
      * Resets texture of the Ship. Indication that a ship is not placed in the grid.
      */
-    public void makeShipTrain(){
-        this.isOnTheBoard=false;
-      //  SnapshotArray<Actor>children= this.horizontalGroup.getChildren();
+    public void makeShipTrain() {
+        this.isOnTheBoard = false;
+        //  SnapshotArray<Actor>children= this.horizontalGroup.getChildren();
         //libgdx's SnapshotArray can be modified during iteration
-        for (Actor actor: this.horizontalGroup.getChildren()) {
+        for (Actor actor : this.horizontalGroup.getChildren()) {
             ShipUnit shipUnit = (ShipUnit) actor;
             shipUnit.showAsTraining();
         }
@@ -135,14 +146,12 @@ public class ShipView extends Container<HorizontalGroup> {
     }
 
     /**
-     *
      * @return List of  UnitActors (( ship is build of unitActors and also grid is built of unitActors  )
-     *
      */
 
 
     public SnapshotArray<Actor> getShipUnits() {
-       return this.horizontalGroup.getChildren();
+        return this.horizontalGroup.getChildren();
 
     }
 
@@ -163,8 +172,8 @@ public class ShipView extends Container<HorizontalGroup> {
         //to avoid that i dont go over 90 or - 90 degrees in rotation
         //It is important feature when choosing a GridUnit from a Grid
 
-        if(this.getRotation()==90){
-            amountInDegrees=-90;
+        if (this.getRotation() == 90) {
+            amountInDegrees = -90;
         }
 
         this.direction = (Direction.Horizontal == this.direction) ? Direction.Vertical : Direction.Horizontal;
@@ -182,8 +191,8 @@ public class ShipView extends Container<HorizontalGroup> {
         return length;
     }
 
-    public ShipType getShipType() {
-        return shipType;
+    public int getShipType() {
+        return boatIDX;
     }
 
     public Direction getDirection() {
@@ -191,20 +200,22 @@ public class ShipView extends Container<HorizontalGroup> {
     }
 
     //-------------------------------------model------------------------------------------------
-    public void addCoordinate(Coordinate coordinate){
+    public void addCoordinate(Coordinate coordinate) {
         this.coordinates.add(coordinate);
 
     }
 
-    public List<Coordinate> getCoordinates(){
+    public List<Coordinate> getCoordinates() {
         return this.coordinates;
     }
-    private void deleteCoordinates(){
+
+    private void deleteCoordinates() {
         this.coordinates.clear();
     }
+
     //for testing
-    public String  printPoints(){
-       return  this.coordinates.toString();
+    public String printPoints() {
+        return this.coordinates.toString();
     }
 
 
