@@ -2,9 +2,7 @@ package com.ada.marcin.screen.menu;
 
 import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
-import com.ada.marcin.assets.RegionNames;
 import com.ada.marcin.config.GameConfig;
-import com.ada.marcin.screen.game.GameScreen;
 import com.ada.marcin.screen.ui.UiFactory;
 import com.ada.marcin.util.GdxUtils;
 import com.badlogic.gdx.Gdx;
@@ -12,18 +10,13 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.awt.dnd.DragGestureListener;
 
 
 public class MenuScreen extends ScreenAdapter {
@@ -95,7 +88,7 @@ public class MenuScreen extends ScreenAdapter {
 
     private void play() {
 
-        game.setScreen(new GameScreen(game));
+       // game.setScreen(new GameScreen(game));
     }
 
     private void highScore() {

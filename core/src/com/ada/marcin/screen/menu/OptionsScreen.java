@@ -4,6 +4,7 @@ import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
 import com.ada.marcin.config.GameConfig;
 import com.ada.marcin.model.Board;
+import com.ada.marcin.model.Coordinate;
 import com.ada.marcin.model.Direction;
 import com.ada.marcin.model.ShipType;
 import com.ada.marcin.screen.ui.GridUnit;
@@ -11,11 +12,13 @@ import com.ada.marcin.screen.ui.ShipUnit;
 import com.ada.marcin.screen.ui.ShipView;
 import com.ada.marcin.screen.ui.UnitActor;
 import com.ada.marcin.util.GdxUtils;
+import com.ada.marcin.util.debug.DebugCameraController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -43,12 +46,12 @@ public class OptionsScreen extends ScreenAdapter {
     private Stage stage;
 
     private Board board;
-
+private DebugCameraController debugCameraController;
 
     private static Vector2 vector2 = new Vector2();
 
 
-    private Map<ShipType, ShipView> shipViews = new HashMap<ShipType, ShipView>();
+    private Map<ShipType, ShipView> shipViews = new HashMap<>();
 
 
     private UnitActor unitActor;
@@ -110,9 +113,15 @@ public class OptionsScreen extends ScreenAdapter {
 
         Table table = new Table();
         //   table.setDebug(true);
-        table.add(getGrid(10, 10));
+
+        Table tbl= getGrid(GameConfig.getInstance().getBoardWidth(),GameConfig.getInstance().getBoardHeight());
+        tbl.setName("GridTable");
+        //ScrollPane scrollPane=new ScrollPane(tbl,this.skin);
+       // table.add(scrollPane);
+        table.add(tbl);
         table.add(ContainerWithShipView());
         table.background(getWindowBackground());
+
 
         table.center();
         table.setFillParent(true);
@@ -126,6 +135,13 @@ public class OptionsScreen extends ScreenAdapter {
 
 
             shipView.addListener(new InputListener() {
+                                     @Override
+                                     public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                                         logger.debug("scroll:event x:"+x+" y:"+y);
+                                        // shipView.moveBy(x - shipView.getWidth() / 2, y - shipView.getHeight() / 2);
+                                         return false;
+                                     }
+
                                      @Override
                                      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                                         logger.debug("touchDown event  button:"+button);
@@ -240,7 +256,7 @@ public class OptionsScreen extends ScreenAdapter {
                                      public void touchDragged(InputEvent event, float x, float y, int pointer) {
                                          //  logger.debug(vector2.set(x,y).toString());
                                          shipView.moveBy(x - shipView.getWidth() / 2, y - shipView.getHeight() / 2);
-                                         shipView.localToParentCoordinates(new Vector2(x, y));
+                                        // shipView.localToParentCoordinates(new Vector2(x, y));
 
                                          // logger.debug("x:::" + shipView.getX());
                                          //  logger.debug("y:::" + shipView.getY());
@@ -250,7 +266,9 @@ public class OptionsScreen extends ScreenAdapter {
 
             );
         }
-
+        // create debug camera controller
+        debugCameraController = new DebugCameraController();
+        debugCameraController.setStartPosition((float) GameConfig.WINDOWS_WIDTH/2,(float) GameConfig.WINDOWS_HEIGHT/2);
     }
 
     //2nd column   of the main table
@@ -293,7 +311,7 @@ public class OptionsScreen extends ScreenAdapter {
             for (int j = 0; j <= sizeY; j++) {
 
                 if (i == 0 && j != 0) {
-                    Label label = new Label("A", skin);
+                    Label label = new Label(Coordinate.columnLabel(j), skin);
                     table.add(label).pad(1);
                 } else if (j == 0 && i != 0) {
 
@@ -302,14 +320,18 @@ public class OptionsScreen extends ScreenAdapter {
 
                     table.add(label).pad(1);
                 } else {
-                    GridUnit unitActor = new GridUnit(getGridViewTexture(), j, i);
+                    final GridUnit unitActor = new GridUnit(getGridViewTexture(), j,i);
                     unitActor.setTouchable(Touchable.enabled);
                     unitActor.addListener(new InputListener() {
-
+                        @Override
+                        public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY) {
+                            return false;
+                        }
 
                         @Override
                         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                             logger.debug(event.toString() + " x:" + x + "y: " + y);
+                           logger.debug( "Grid x:(column):"+unitActor.getGridX()  +"(row)y:"+ unitActor.getGridY());
                             return true;
                         }
 
@@ -379,5 +401,8 @@ public class OptionsScreen extends ScreenAdapter {
         GdxUtils.clearScreen();
         stage.act();
         stage.draw();
+        //to zoom out in
+        debugCameraController.handleDebugInput(delta);
+        debugCameraController.applyTo((OrthographicCamera) stage.getCamera());
     }
 }
