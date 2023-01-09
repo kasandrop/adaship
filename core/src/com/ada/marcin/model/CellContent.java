@@ -5,7 +5,9 @@ public class CellContent {
     private final int indexOfTheShip;
     private boolean isDamaged;
 
-    public CellContent(int shipType, int indexOfTheShip, boolean isDamaged) {
+    public CellContent(int shipType,
+                       int indexOfTheShip,
+                       boolean isDamaged) {
         this.shipType = shipType;
         this.indexOfTheShip = indexOfTheShip;
         this.isDamaged = isDamaged;

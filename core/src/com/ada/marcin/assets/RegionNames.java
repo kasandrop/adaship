@@ -16,7 +16,7 @@ public class RegionNames {
     public static final String MEDIUM = "medium";
     public static final String OPTIONS = "options";
     public static final String OPTIONS_PRESSED = "optionsPressed";
-    public static final String PANEL = "panel";
+    public static final String PANEL = "default-pane-noborder";
     public static final String PLAY = "play";
     public static final String PLAY_PRESSED = "playPressed";
 

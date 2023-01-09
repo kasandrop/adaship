@@ -20,7 +20,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 
 public class MenuScreen extends ScreenAdapter {
-    public static final Logger logger = new Logger(MenuScreen.class.getName(), Logger.DEBUG);
+    public static final Logger logger = new Logger(MenuScreen.class.getName(),
+            Logger.DEBUG);
 
     private final AdashipGame game;
     private final AssetManager assetManager;
@@ -44,51 +45,71 @@ public class MenuScreen extends ScreenAdapter {
         Table buttonTable = uiFactory.createContainerForButtons();
 
         //play button
-        TextButton playButton = new TextButton("PLAY", skin);
-        playButton.getLabel().setFontScale(2, 2);
-        playButton.pad(20) ;
+        TextButton playButton = new TextButton("PLAY",
+                skin);
+        playButton.getLabel()
+                .setFontScale(2,
+                        2);
+        playButton.pad(20);
         playButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event,
+                                Actor actor) {
                 play();
             }
         });
         //high score button
-        TextButton highScoreButton = new TextButton("High Score", skin);
+        TextButton highScoreButton = new TextButton("High Score",
+                skin);
         highScoreButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event,
+                                Actor actor) {
                 highScore();
             }
         });
         //options
-        TextButton player1Button = new TextButton("Player 1. Set up the game", skin);
-        player1Button.getLabel().setFontScale(2, 2);
-        player1Button.pad(20) ;
+        TextButton player1Button = new TextButton("Player 1. Set up the game",
+                skin);
+        player1Button.getLabel()
+                .setFontScale(2,
+                        2);
+        player1Button.pad(20);
         player1Button.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event,
+                                Actor actor) {
                 setUpPlayer1();
             }
         });
         //quite button
 
-        TextButton player2Button = new TextButton("Player 2. Set up the game", skin);
-        player2Button.getLabel().setFontScale(2, 2);
-        player2Button.pad(20) ;
+        TextButton player2Button = new TextButton("Player 2. Set up the game",
+                skin);
+        player2Button.getLabel()
+                .setFontScale(2,
+                        2);
+        player2Button.pad(20);
         player2Button.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event,
+                                Actor actor) {
                 setUpPlayer2();
             }
         });
 
         //setup table
 
-        buttonTable.add(playButton).width(400).row();
-       // buttonTable.add(player2Button).row();
-        buttonTable.add(player1Button).width(400).row();
-        buttonTable.add(player2Button).width(400).row();
+        buttonTable.add(playButton)
+                .width(400)
+                .row();
+        // buttonTable.add(player2Button).row();
+        buttonTable.add(player1Button)
+                .width(400)
+                .row();
+        buttonTable.add(player2Button)
+                .width(400)
+                .row();
 
         table.add(buttonTable);
 
@@ -102,7 +123,7 @@ public class MenuScreen extends ScreenAdapter {
 
     private void play() {
 
-       // game.setScreen(new GameScreen(game));
+        // game.setScreen(new GameScreen(game));
     }
 
     private void highScore() {
@@ -122,8 +143,10 @@ public class MenuScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
-        stage = new Stage(viewport, game.getBatch());
+        viewport = new FitViewport(GameConfig.HUD_WIDTH,
+                GameConfig.HUD_HEIGHT);
+        stage = new Stage(viewport,
+                game.getBatch());
 
         Gdx.input.setInputProcessor(stage);
 
@@ -131,9 +154,12 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width,
+                       int height) {
 
-        viewport.update(width, height, true);
+        viewport.update(width,
+                height,
+                true);
     }
 
     @Override

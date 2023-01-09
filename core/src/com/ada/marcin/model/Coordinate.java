@@ -1,9 +1,6 @@
 package com.ada.marcin.model;
 
 //Point in a cartesian coordinate system
-
-import com.ada.marcin.common.WrongCoordinateException;
-
 import java.util.Objects;
 
 public class Coordinate {
@@ -14,33 +11,14 @@ public class Coordinate {
 
     private int hashCode;
 
-    public Coordinate(int x, int y) {
+    public Coordinate(int x,
+                      int y) {
         this.x = x;
         this.y = y;
         this.data = x + "-" + y;
-        this.hashCode = Objects.hash(this.x, this.y);
+        this.hashCode = Objects.hash(this.x,
+                this.y);
     }
-
-    //  coordinate   is "7-2"   where 7 is a row and 2 is a column
-//    public Coordinate(String coordinate) throws WrongCoordinateException {
-//        this.data = coordinate;
-//        if (!this.data.contains("-")) throw new WrongCoordinateException("Wrong Coordinate format provided. Lack of \"-\"");
-//        try {
-//            this.x = Integer.parseInt(coordinate.split("-")[0]);
-//
-//        } catch (NumberFormatException e) {
-//            throw new WrongCoordinateException("Wrong Coordinate provided. X is not a number ");
-//        }
-//        try {
-//            this.y = Integer.parseInt(coordinate.split("-")[1]);
-//
-//        } catch (NumberFormatException e) {
-//            throw new WrongCoordinateException("Wrong Coordinate provided. Y is not a number ");
-//        }
-//
-//
-//    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -71,11 +49,12 @@ public class Coordinate {
 
     @Override
     public String toString() {
-        return "Coordinate :" + data;
+        return this.getY() + Coordinate.columnLabel(this.getX());
     }
 
 
     public static String columnLabel(int column) {
+        column--;
 
         //convert col to label; valid range 0 to 702 (ZZ), col's only relates to A..ZZ
         char[] reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();

@@ -27,12 +27,15 @@ public class Ship {
     private boolean isOnTheBoard;
 
 
-    public Ship(int name, int length, Direction direction) {
+    public Ship(int name,
+                int length,
+                Direction direction) {
         this.shipType = name;
         this.length = length;
         this.direction = direction;
         for (int i = 0; i < length; i++) {
-            damagedElements.add(0, false);
+            damagedElements.add(0,
+                    false);
 
         }
 
@@ -52,7 +55,8 @@ public class Ship {
     }
 
 
-    public void setPosition(int x, int y) {
+    public void setPosition(int x,
+                            int y) {
 
         this.x = x;
         this.y = y;
@@ -61,7 +65,8 @@ public class Ship {
     }
 
     public void damageShip(int element) {
-        this.damagedElements.set(element, true);
+        this.damagedElements.set(element,
+                true);
         int allDamaged = 0;
         for (int i = 0; i < this.length; i++) {
             if (this.damagedElements.get(i)) {

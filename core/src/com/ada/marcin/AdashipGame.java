@@ -15,7 +15,8 @@ public class AdashipGame extends Game {
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         assetManager = new AssetManager();
-        assetManager.getLogger().setLevel(Application.LOG_DEBUG);
+        assetManager.getLogger()
+                .setLevel(Application.LOG_DEBUG);
         batch = new SpriteBatch();
         setScreen(new LoadingScreen(this));
     }

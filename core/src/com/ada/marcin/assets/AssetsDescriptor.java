@@ -7,14 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class AssetsDescriptor {
     public static final AssetDescriptor<BitmapFont> FONT =
-            new AssetDescriptor<BitmapFont>(AssetPaths.UI_FONT, BitmapFont.class);
+            new AssetDescriptor<BitmapFont>(AssetPaths.UI_FONT,
+                    BitmapFont.class);
 
 
     public static final AssetDescriptor<TextureAtlas> GAME_PLAY =
-            new AssetDescriptor<TextureAtlas>(AssetPaths.GAME_PLAY, TextureAtlas.class);
+            new AssetDescriptor<TextureAtlas>(AssetPaths.GAME_PLAY,
+                    TextureAtlas.class);
 
     public static final AssetDescriptor<Skin> UISKIN =
-            new AssetDescriptor<Skin>(AssetPaths.UI_JSON, Skin.class);
+            new AssetDescriptor<Skin>(AssetPaths.UI_JSON,
+                    Skin.class);
 
 
 }

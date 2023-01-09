@@ -23,7 +23,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class HighScoreScreen extends ScreenAdapter {
-    public static final Logger logger = new Logger(HighScoreScreen.class.getName(), Logger.DEBUG);
+    public static final Logger logger = new Logger(HighScoreScreen.class.getName(),
+            Logger.DEBUG);
 
     private final AdashipGame game;
     private final AssetManager assetManager;
@@ -39,8 +40,10 @@ public class HighScoreScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT);
-        stage = new Stage(viewport, game.getBatch());
+        viewport = new FitViewport(GameConfig.HUD_WIDTH,
+                GameConfig.HUD_HEIGHT);
+        stage = new Stage(viewport,
+                game.getBatch());
 
         Gdx.input.setInputProcessor(stage);
 
@@ -66,10 +69,12 @@ public class HighScoreScreen extends ScreenAdapter {
 
 
         //back button
-        TextButton backButton = new TextButton("Back", skin);
+        TextButton backButton = new TextButton("Back",
+                skin);
         backButton.addListener(new ChangeListener() {
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
+            public void changed(ChangeEvent event,
+                                Actor actor) {
                 back();
             }
         });
@@ -77,18 +82,24 @@ public class HighScoreScreen extends ScreenAdapter {
 
         //setup table
         Table buttonTable = new Table();
-        buttonTable.defaults().pad(20);
+        buttonTable.defaults()
+                .pad(20);
         buttonTable.center();
         //background
 
         //label
-        Label highScoreText = new Label("HIGHSCORE", skin);
+        Label highScoreText = new Label("HIGHSCORE",
+                skin);
 
-        Label highScoreLabel = new Label(GameManager.INSTANCE.getHighScore(), skin);
+        Label highScoreLabel = new Label(GameManager.INSTANCE.getHighScore(),
+                skin);
 
-        buttonTable.add(highScoreText).row();
-        buttonTable.add(highScoreLabel).row();
-        buttonTable.add(backButton).row();
+        buttonTable.add(highScoreText)
+                .row();
+        buttonTable.add(highScoreLabel)
+                .row();
+        buttonTable.add(backButton)
+                .row();
 
 
         table.add(buttonTable);
@@ -108,8 +119,11 @@ public class HighScoreScreen extends ScreenAdapter {
 
 
     @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
+    public void resize(int width,
+                       int height) {
+        viewport.update(width,
+                height,
+                true);
     }
 
     @Override

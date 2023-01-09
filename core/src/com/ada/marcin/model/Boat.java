@@ -6,7 +6,8 @@ public class Boat {
     private final String name;
     private final int length;
 
-    public Boat(String name, int length) {
+    public Boat(String name,
+                int length) {
         this.name = name;
         this.length = length;
     }

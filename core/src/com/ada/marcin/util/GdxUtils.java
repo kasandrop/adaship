@@ -18,7 +18,10 @@ public class GdxUtils {
         // clear screen
         // DRY - Don't repeat yourself
         // WET - Waste everyone's time
-        Gdx.gl.glClearColor(color.r, color.g, color.b, color.a);
+        Gdx.gl.glClearColor(color.r,
+                color.g,
+                color.b,
+                color.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 }

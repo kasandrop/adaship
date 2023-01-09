@@ -13,7 +13,8 @@ import com.badlogic.gdx.utils.Logger;
 public class DebugCameraConfig {
 
     // == constants ==
-    private static final Logger log = new Logger(DebugCameraController.class.getName(), Logger.DEBUG);
+    private static final Logger log = new Logger(DebugCameraController.class.getName(),
+            Logger.DEBUG);
 
     // names/keys in key-value map or names of our values inside json file
     private static final String MAX_ZOOM_IN = "maxZoomIn";
@@ -77,9 +78,12 @@ public class DebugCameraConfig {
     }
 
     // == static methods ==
-    private static int getInputKeyValue(JsonValue root, String name, int defaultInput) {
+    private static int getInputKeyValue(JsonValue root,
+                                        String name,
+                                        int defaultInput) {
         // get value with name from jsonValue (name-value map) if it does not exist use default
-        String keyString = root.getString(name, Input.Keys.toString(defaultInput));
+        String keyString = root.getString(name,
+                Input.Keys.toString(defaultInput));
 
         // convert String into keycode
         return Input.Keys.valueOf(keyString);
@@ -102,23 +106,44 @@ public class DebugCameraConfig {
             JsonReader reader = new JsonReader();
             JsonValue root = reader.parse(fileHandle);
 
-            maxZoomIn = root.getFloat(MAX_ZOOM_IN, DEFAULT_MAX_ZOOM_IN);
-            maxZoomOut = root.getFloat(MAX_ZOOM_OUT, DEFAULT_MAX_ZOOM_OUT);
-            moveSpeed = root.getFloat(MOVE_SPEED, DEFAULT_MOVE_SPEED);
-            zoomSpeed = root.getFloat(ZOOM_SPEED, DEFAULT_ZOOM_SPEED);
+            maxZoomIn = root.getFloat(MAX_ZOOM_IN,
+                    DEFAULT_MAX_ZOOM_IN);
+            maxZoomOut = root.getFloat(MAX_ZOOM_OUT,
+                    DEFAULT_MAX_ZOOM_OUT);
+            moveSpeed = root.getFloat(MOVE_SPEED,
+                    DEFAULT_MOVE_SPEED);
+            zoomSpeed = root.getFloat(ZOOM_SPEED,
+                    DEFAULT_ZOOM_SPEED);
 
-            leftKey = getInputKeyValue(root, LEFT_KEY, DEFAULT_LEFT_KEY);
-            rightKey = getInputKeyValue(root, RIGHT_KEY, DEFAULT_RIGHT_KEY);
-            upKey = getInputKeyValue(root, UP_KEY, DEFAULT_UP_KEY);
-            downKey = getInputKeyValue(root, DOWN_KEY, DEFAULT_DOWN_KEY);
+            leftKey = getInputKeyValue(root,
+                    LEFT_KEY,
+                    DEFAULT_LEFT_KEY);
+            rightKey = getInputKeyValue(root,
+                    RIGHT_KEY,
+                    DEFAULT_RIGHT_KEY);
+            upKey = getInputKeyValue(root,
+                    UP_KEY,
+                    DEFAULT_UP_KEY);
+            downKey = getInputKeyValue(root,
+                    DOWN_KEY,
+                    DEFAULT_DOWN_KEY);
 
-            zoomInKey = getInputKeyValue(root, ZOOM_IN_KEY, DEFAULT_ZOOM_IN_KEY);
-            zoomOutKey = getInputKeyValue(root, ZOOM_OUT_KEY, DEFAULT_ZOOM_OUT_KEY);
-            resetKey = getInputKeyValue(root, RESET_KEY, DEFAULT_RESET_KEY);
-            logKey = getInputKeyValue(root, LOG_KEY, DEFAULT_LOG_KEY);
+            zoomInKey = getInputKeyValue(root,
+                    ZOOM_IN_KEY,
+                    DEFAULT_ZOOM_IN_KEY);
+            zoomOutKey = getInputKeyValue(root,
+                    ZOOM_OUT_KEY,
+                    DEFAULT_ZOOM_OUT_KEY);
+            resetKey = getInputKeyValue(root,
+                    RESET_KEY,
+                    DEFAULT_RESET_KEY);
+            logKey = getInputKeyValue(root,
+                    LOG_KEY,
+                    DEFAULT_LOG_KEY);
 
         } catch (Exception e) {
-            log.error("Error loading " + FILE_PATH + " using defaults.", e);
+            log.error("Error loading " + FILE_PATH + " using defaults.",
+                    e);
             setupDefaults();
         }
     }

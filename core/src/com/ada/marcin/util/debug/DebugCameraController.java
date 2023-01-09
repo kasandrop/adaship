@@ -13,7 +13,8 @@ import com.badlogic.gdx.utils.Logger;
 public class DebugCameraController {
 
     // == constants ==
-    private static final Logger log = new Logger(DebugCameraController.class.getName(), Logger.DEBUG);
+    private static final Logger log = new Logger(DebugCameraController.class.getName(),
+            Logger.DEBUG);
 
     // == attributes ==
     private Vector2 position = new Vector2();
@@ -28,13 +29,17 @@ public class DebugCameraController {
     }
 
     // == public methods ==
-    public void setStartPosition(float x, float y) {
-        startPosition.set(x, y);
-        position.set(x, y);
+    public void setStartPosition(float x,
+                                 float y) {
+        startPosition.set(x,
+                y);
+        position.set(x,
+                y);
     }
 
     public void applyTo(OrthographicCamera camera) {
-        camera.position.set(position, 0);
+        camera.position.set(position,
+                0);
         camera.zoom = zoom;
         camera.update();
     }
@@ -78,32 +83,42 @@ public class DebugCameraController {
     }
 
     // == private methods ==
-    private void setPosition(float x, float y) {
-        position.set(x, y);
+    private void setPosition(float x,
+                             float y) {
+        position.set(x,
+                y);
     }
 
     private void setZoom(float value) {
-        zoom = MathUtils.clamp(value, config.getMaxZoomIn(), config.getMaxZoomOut());
+        zoom = MathUtils.clamp(value,
+                config.getMaxZoomIn(),
+                config.getMaxZoomOut());
     }
 
-    private void moveCamera(float xSpeed, float ySpeed) {
-        setPosition(position.x + xSpeed, position.y + ySpeed);
+    private void moveCamera(float xSpeed,
+                            float ySpeed) {
+        setPosition(position.x + xSpeed,
+                position.y + ySpeed);
     }
 
     private void moveLeft(float speed) {
-        moveCamera(-speed, 0);
+        moveCamera(-speed,
+                0);
     }
 
     private void moveRight(float speed) {
-        moveCamera(speed, 0);
+        moveCamera(speed,
+                0);
     }
 
     private void moveUp(float speed) {
-        moveCamera(0, speed);
+        moveCamera(0,
+                speed);
     }
 
     private void moveDown(float speed) {
-        moveCamera(0, -speed);
+        moveCamera(0,
+                -speed);
     }
 
     private void zoomIn(float zoomSpeed) {

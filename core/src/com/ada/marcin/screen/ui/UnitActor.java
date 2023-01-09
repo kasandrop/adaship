@@ -12,34 +12,40 @@ import com.badlogic.gdx.utils.Logger;
 
 public class UnitActor extends Actor {
 
-    public static final Logger logger = new Logger(UnitActor.class.getName(), Logger.DEBUG);
+    public static final Logger logger = new Logger(UnitActor.class.getName(),
+            Logger.DEBUG);
 
     protected TextureRegion regionCurrent;
 
 
-
-    public UnitActor(){
+    public UnitActor() {
         init();
     }
 
     private void init() {
-        setSize(GameConfig.CELL_SIZE, GameConfig.CELL_SIZE);
+        setSize(GameConfig.CELL_SIZE,
+                GameConfig.CELL_SIZE);
         setOrigin(Align.center);
     }
 
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(Batch batch,
+                     float parentAlpha) {
         if (this.regionCurrent == null) {
             logger.error("TextureRegion is not set in UnitActor");
             return;
         }
 
         batch.draw(this.regionCurrent,
-                getX(), getY(),
-                getOriginX(), getOriginY(),
-                getWidth(), getHeight(),
-                getScaleX(), getScaleY(),
+                getX(),
+                getY(),
+                getOriginX(),
+                getOriginY(),
+                getWidth(),
+                getHeight(),
+                getScaleX(),
+                getScaleY(),
                 getRotation()
         );
     }

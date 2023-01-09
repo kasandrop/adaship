@@ -6,7 +6,6 @@ import com.ada.marcin.config.GameConfig;
 import com.ada.marcin.model.Boat;
 import com.ada.marcin.model.Coordinate;
 import com.ada.marcin.screen.menu.MenuScreen;
-import com.ada.marcin.screen.menu.OptionsScreen;
 import com.ada.marcin.util.GdxUtils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -20,12 +19,11 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.util.Arrays;
-
 
 public class LoadingScreen extends ScreenAdapter {
 
-    public static final Logger logger = new Logger(LoadingScreen.class.getName(), Logger.DEBUG);
+    public static final Logger logger = new Logger(LoadingScreen.class.getName(),
+            Logger.DEBUG);
     public static final float PROGRESS_BAR_WIDTH = GameConfig.HUD_WIDTH / 2;
     public static final float PROGRESS_BAR_HEIGHT = 50;
     private final AdashipGame adashipGame;
@@ -46,7 +44,9 @@ public class LoadingScreen extends ScreenAdapter {
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        viewport = new FitViewport(GameConfig.HUD_WIDTH, GameConfig.HUD_HEIGHT, camera);
+        viewport = new FitViewport(GameConfig.HUD_WIDTH,
+                GameConfig.HUD_HEIGHT,
+                camera);
         shapeRenderer = new ShapeRenderer();
 
         bitmapFont = new BitmapFont();
@@ -58,28 +58,38 @@ public class LoadingScreen extends ScreenAdapter {
         FileHandle handle = Gdx.files.internal("adaship_config.ini");
 
         //  end of the line  \r?
-        String[] data = handle.readString().split(System.lineSeparator());
+        String[] data = handle.readString()
+                .split(System.lineSeparator());
         if (data[0].contains("Board")) {
-            String xx = right((data[0].split(":"))[1], "x");
-            String yy = left((data[0].split(":"))[1], "x");
+            String xx = left((data[0].split(":"))[1],
+                    "x");
+            String yy = right((data[0].split(":"))[1],
+                    "x");
             logger.debug("x:" + xx);
             logger.debug("y:" + yy);
 
             //creating singleton
-            GameConfig.getInstance(Integer.parseInt(xx.trim()),Integer.parseInt(yy.trim()));
+            GameConfig.getInstance(Integer.parseInt(xx.trim()),
+                    Integer.parseInt(yy.trim()));
+
 
         }
         for (int i = 1; i < data.length; i++) {
             if (data[i].contains("Boat")) {
-                String length = right((data[i].split(":"))[1],",");
-                String name = left((data[i].split(":"))[1],",");
-                GameConfig.getInstance().registerBoat(new Boat(name,Integer.parseInt(length.trim())));
+                String length = right((data[i].split(":"))[1],
+                        ",");
+                String name = left((data[i].split(":"))[1],
+                        ",");
+                GameConfig.getInstance()
+                        .registerBoat(new Boat(name,
+                                Integer.parseInt(length.trim())));
             }
 
 
         }
-         logger.debug("  size of created array:"+ GameConfig.getInstance().getSizeOfBoats());
-        for(int i=0;i<80;i++){
+        logger.debug("  size of created array:" + GameConfig.getInstance()
+                .getCountOfBoats());
+        for (int i = 0; i < 80; i++) {
             logger.debug(Coordinate.columnLabel(i));
         }
     }
@@ -105,9 +115,15 @@ public class LoadingScreen extends ScreenAdapter {
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();
-        bitmapFont.draw(spriteBatch, progress * 100 + "%", progressBarX, progressBarY - 40);
+        bitmapFont.draw(spriteBatch,
+                progress * 100 + "%",
+                progressBarX,
+                progressBarY - 40);
         spriteBatch.end();
-        shapeRenderer.rect(progressBarX, progressBarY, PROGRESS_BAR_WIDTH * progress, PROGRESS_BAR_HEIGHT);
+        shapeRenderer.rect(progressBarX,
+                progressBarY,
+                PROGRESS_BAR_WIDTH * progress,
+                PROGRESS_BAR_HEIGHT);
     }
 
     private void update(float delta) {
@@ -123,8 +139,11 @@ public class LoadingScreen extends ScreenAdapter {
     }
 
     @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
+    public void resize(int width,
+                       int height) {
+        viewport.update(width,
+                height,
+                true);
     }
 
     @Override
@@ -139,11 +158,14 @@ public class LoadingScreen extends ScreenAdapter {
         bitmapFont.dispose();
     }
 
-    String left(String haystack, String needle) {
+    String left(String haystack,
+                String needle) {
+
         return haystack.split(needle)[0];
     }
 
-    String right(String haystack, String needle) {
+    String right(String haystack,
+                 String needle) {
         return haystack.split(needle)[1];
     }
 }

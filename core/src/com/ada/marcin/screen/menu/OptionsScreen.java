@@ -1,18 +1,10 @@
 package com.ada.marcin.screen.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
 import com.ada.marcin.config.GameConfig;
 import com.ada.marcin.model.*;
-import com.ada.marcin.screen.ui.GridUnit;
-import com.ada.marcin.screen.ui.ShipUnit;
-import com.ada.marcin.screen.ui.ShipView;
-import com.ada.marcin.screen.ui.UnitActor;
+import com.ada.marcin.screen.ui.*;
 import com.ada.marcin.util.GdxUtils;
 import com.ada.marcin.util.debug.DebugCameraController;
 import com.badlogic.gdx.Gdx;
@@ -26,12 +18,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class OptionsScreen extends ScreenAdapter {
@@ -46,168 +44,113 @@ public class OptionsScreen extends ScreenAdapter {
     private Stage stage;
 
     private Board board;
+    private SaveButton saveButton;
+    private TextButton buttonAuto;
+
+    private TextButton resetButton;
 
     //focus camera functionality and   camera movements.
     // just for debugging purposes
     private DebugCameraController debugCameraController;
-
     private static Vector2 vector2 = new Vector2();
-
-
     private Map<Integer, ShipView> shipViews = new HashMap<>();
-
-
-    private UnitActor unitActor;
-    private TextureRegion region;
-
+    private List<HUD> huds = new ArrayList<>();
     private Skin skin;
-
+    private UiFactory uiFactory;
 
     public OptionsScreen(AdashipGame game) {
         this.game = game;
         this.assetManager = game.getAssetManager();
-
+        this.uiFactory = new UiFactory(this.assetManager);
         this.skin = assetManager.get(AssetsDescriptor.UISKIN);
-
-    }
-
-    TextureRegion getGridViewTexture() {
-        Pixmap pixmap = new Pixmap(1,
-                1,
-                Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.SKY);
-        pixmap.fill();
-        return new TextureRegion(new Texture(pixmap));
-    }
-
-    TextureRegion getUnitViewTexture() {
-        Pixmap pixmapShip = new Pixmap(1,
-                1,
-                Pixmap.Format.RGBA8888);
-        pixmapShip.setColor(Color.DARK_GRAY);
-        pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmapShip));
-    }
-
-    TextureRegion getUnitViewReadyTexture() {
-        Pixmap pixmapShip = new Pixmap(1,
-                1,
-                Pixmap.Format.RGBA8888);
-        pixmapShip.setColor(Color.GREEN);
-        pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmapShip));
-    }
-
-    TextureRegion getUnitViewDamagedTexture() {
-        Pixmap pixmapShip = new Pixmap(1,
-                1,
-                Pixmap.Format.RGBA8888);
-        pixmapShip.setColor(Color.RED);
-        pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmapShip));
     }
 
     @Override
     public void show() {
-        board = new Board(GameConfig.getInstance().getBoardWidth(),
+        board = new Board(GameConfig.getInstance()
+                .getBoardWidth(),
                 GameConfig.getInstance()
                         .getBoardHeight());
+
         viewport = new FitViewport(GameConfig.HUD_WIDTH,
                 GameConfig.HUD_HEIGHT);
         stage = new Stage(viewport,
                 game.getBatch());
+        this.resetButton = new TextButton("Reset  Ships",
+                skin,
+                "default");
+        this.resetButton.setRound(true);
+        this.resetButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event,
+                                float x,
+                                float y) {
+                reset();
+            }
+        });
 
+        this.buttonAuto = new TextButton("Auto Place",
+                skin,
+                "default");
+        buttonAuto.setRound(true);
+
+        buttonAuto.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event,
+                                float x,
+                                float y) {
+                autoPositionShipViews();
+            }
+        });
+
+        this.saveButton = new SaveButton("Save your shipboard",
+                skin,
+                "default",
+                GameConfig.getInstance()
+                        .getCountOfBoats());
         Gdx.input.setInputProcessor(stage);
         initShipsViews();
         initUi();
         //logger.debug("origin x,y="+shipView.getWidth()/2+"  "+shipView.getHeight()/2);
     }
 
-
-    private void initUi() {
-
-        Table table = new Table();
-        //   table.setDebug(true);
-
-        Table tbl = getGrid(GameConfig.getInstance()
-                        .getBoardWidth(),
-                GameConfig.getInstance()
-                        .getBoardHeight());
-        tbl.setName("GridTable");
-        //ScrollPane scrollPane=new ScrollPane(tbl,this.skin);
-        // table.add(scrollPane);
-        table.add(tbl);
-        table.add(ContainerWithShipView());
-        table.background(getWindowBackground());
-
-
-        table.center();
-        table.setFillParent(true);
-        table.pack();
-        table.setDebug(true);
-
-        stage.addActor(table);
-        for (Map.Entry<Integer, ShipView> entry : this.shipViews.entrySet()) {
-            //System.out.println(entry.getKey() + ":" + entry.getValue());
-            final ShipView shipView = entry.getValue();
-        }
-        // create debug camera controller
-        debugCameraController = new DebugCameraController();
-        debugCameraController.setStartPosition((float) GameConfig.WINDOWS_WIDTH / 2,
-                (float) GameConfig.WINDOWS_HEIGHT / 2);
-    }
-
     //2nd column   of the main table
-    private VerticalGroup ContainerWithShipView() {
-        VerticalGroup verticalGroup = new VerticalGroup();
-        for (Map.Entry<Integer, ShipView> entry : this.shipViews.entrySet()) {
-            //System.out.println(entry.getKey() + ":" + entry.getValue());
-            verticalGroup.addActor(getContainer(entry.getValue()));
-        }
-        verticalGroup.space(10);
-        verticalGroup.pad(10);
-        verticalGroup.pack();
-        return verticalGroup;
-
-    }
-
     private void initShipsViews() {
-
         int myIndex = 0;
         List<Boat> myBoats = GameConfig.getInstance()
                 .getBoats();
         for (Boat boat : myBoats) {
-           final ShipView shipView=  shipViewFactory(myIndex,
+            final ShipView shipView = uiFactory.shipViewFactory(myIndex,
                     boat.getLength(),
                     boat.getName(),
                     getUnitViewDamagedTexture(),
                     getUnitViewTexture(),
                     getUnitViewReadyTexture());
             this.shipViews.put(myIndex,
-                  shipView);
+                    shipView);
+            HUD hud = new HUD(skin,
+                    myIndex + "",
+                    shipView.getName(),
+                    shipView.getLength() + "",
+                    shipView.getDamage() + "",
+                    shipView.getShipStatus()
+                            .toString());
+            shipView.addObserver(hud);
+            shipView.addObserver(this.saveButton);
+            this.huds.add(hud);
             myIndex++;
             shipView.addListener(new InputListener() {
-                                     @Override
-                                     public boolean scrolled(InputEvent event,
-                                                             float x,
-                                                             float y,
-                                                             float amountX,
-                                                             float amountY) {
-                                         logger.debug("scroll:event x:" + x + " y:" + y);
-                                         return false;
-                                     }
-
                                      @Override
                                      public boolean touchDown(InputEvent event,
                                                               float x,
                                                               float y,
                                                               int pointer,
                                                               int button) {
-                                         logger.debug("touchDown event  on ViewShip:" + shipView.getShipType());
+                                         //logger.debug("touchDown event  on ViewShip:" + shipView.getShipType());
                                          shipView.setZIndex(1000000);
                                          board.removeShipFromTheGrid(shipView);
                                          //back to brown colour
-                                         shipView.makeShipTrain();
+                                         shipView.trainShip();
                                          if (button == Input.Buttons.RIGHT) {
                                              shipView.rotateBy(90);
                                              return false;
@@ -216,7 +159,6 @@ public class OptionsScreen extends ScreenAdapter {
                                          return true;
 
                                      }
-
 
                                      //Ship is built of shipUnits   When user drops on the grid a ship event is raised :touchUp. That event is raised
                                      // on the ViewShip.  I calculate here a  middle point of each unitActor.  Carrier for example consists of 5 unitActors
@@ -281,20 +223,23 @@ public class OptionsScreen extends ScreenAdapter {
 //                                         }else{
                                          firstGridUnit = gridUnits.get(0);
 //                                         }
-                                         logger.debug("Rotation:" + shipView.getRotation());
+                                         //logger.debug("Rotation:" + shipView.getRotation());
                                          vector2 = firstGridUnit.localToStageCoordinates(vector2.setZero());
                                          event.getStage()
                                                  .addActor(shipView);
-
                                          shipView.setPositionAlign(vector2.x,
                                                  vector2.y);
                                          shipView.setZIndex(1000);
                                          logger.debug(shipView.printPoints());
-                                         logger.debug("_______________");
-                                         if (board.placeShipOnTheGrid(shipView)) {
-                                             shipView.makeShipReady();
+                                         boolean answer = board.placeShipOnTheGrid(shipView);
+                                         // logger.debug("Is placement allowed?:"+answer);
+                                         if (answer) {
+                                             shipView.deployShip();
+                                         } else {
+                                             shipView.deleteCoordinates();
                                          }
                                      }
+
                                      @Override
                                      public void touchDragged(InputEvent event,
                                                               float x,
@@ -306,153 +251,47 @@ public class OptionsScreen extends ScreenAdapter {
                                  }
             );
         }
-
-
     }
 
-    //  the brown placeholder   where ships are placed
-    private Container<ShipView> getContainer(ShipView shipView) {
-        Container<ShipView> container = new Container<>();
-        container.background(getContainerBackground());
-        container.size(GameConfig.CELL_SIZE * shipView.getLength() + shipView.getLength() * 2);
-        container.setActor(shipView);
-        return container;
+    private void initUi() {
+
+        Table table = new Table();
+        //   table.setDebug(true);
+
+        Table tbl = uiFactory.getGrid(GameConfig.getInstance()
+                        .getBoardWidth(),
+                GameConfig.getInstance()
+                        .getBoardHeight());
+        tbl.setName("GridTable");
+        table.add(tbl);
+        table.add(uiFactory.ContainerWithShipView(this.shipViews));
+        table.row();
+        table.add(uiFactory.getInfoPanel(this.huds));
+        table.add(uiFactory.getButtons(this.saveButton,
+                this.resetButton,
+                this.buttonAuto));
+        table.background(getWindowBackground());
+        table.center();
+        table.setFillParent(true);
+        table.pack();
+        table.setDebug(true);
+        stage.addActor(table);
+        // create debug camera controller
+        debugCameraController = new DebugCameraController();
+        debugCameraController.setStartPosition((float) GameConfig.WINDOWS_WIDTH / 2,
+                (float) GameConfig.WINDOWS_HEIGHT / 2);
     }
-
-    private Table getGrid(int sizeX,
-                          int sizeY) {
-        Table table = new Table(skin);
-        for (int i = 0; i <= sizeX; i++) {
-            table.row();
-            for (int j = 0; j <= sizeY; j++) {
-
-                if (i == 0 && j != 0) {
-                    Label label = new Label(Coordinate.columnLabel(j-1),
-                            skin);
-                    table.add(label)
-                            .pad(1);
-                } else if (j == 0 && i != 0) {
-
-                    String number = String.valueOf(i);
-                    Label label = new Label(number,
-                            skin,
-                            "default");
-
-                    table.add(label)
-                            .pad(1);
-                } else {
-                    final GridUnit unitActor = new GridUnit(getGridViewTexture(),
-                            j,
-                            i);
-                    unitActor.setTouchable(Touchable.enabled);
-                    unitActor.addListener(new InputListener() {
-                        @Override
-                        public boolean scrolled(InputEvent event,
-                                                float x,
-                                                float y,
-                                                float amountX,
-                                                float amountY) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean touchDown(InputEvent event,
-                                                 float x,
-                                                 float y,
-                                                 int pointer,
-                                                 int button) {
-                            logger.debug(event.toString() + " x:" + x + "y: " + y);
-                            logger.debug("Grid x:(column):" + unitActor.getGridX() + "(row)y:" + unitActor.getGridY());
-                            return true;
-                        }
-
-                        @Override
-                        public void touchDragged(InputEvent event,
-                                                 float x,
-                                                 float y,
-                                                 int pointer) {
-                            //        logger.debug(event.toString() + " " + x);
-                            super.touchDragged(event,
-                                    x,
-                                    y,
-                                    pointer);
-                        }
-
-                        @Override
-                        public void enter(InputEvent event,
-                                          float x,
-                                          float y,
-                                          int pointer,
-                                          Actor fromActor) {
-                            //     logger.debug(event.toString() + "x: " + x + "y: " + y);
-
-                        }
-
-                        @Override
-                        public void exit(InputEvent event,
-                                         float x,
-                                         float y,
-                                         int pointer,
-                                         Actor toActor) {
-                            //   logger.debug(event.toString() + " " + x);
-                            super.exit(event,
-                                    x,
-                                    y,
-                                    pointer,
-                                    toActor);
-
-                        }
-                    });
-                    table.add(unitActor)
-                            .pad(1);
-                }
-
-            }
-        }
-        return table;
-
-    }
-
-    ShipView shipViewFactory(int myIndex,
-                             int length,
-                             String name,
-                             TextureRegion unitViewDamagedTexture,
-                             TextureRegion unitViewTexture,
-                             TextureRegion regionReady) {
-        return new ShipView(myIndex,
-                length,
-                name,
-                Direction.Horizontal,
-                unitViewDamagedTexture,
-                unitViewTexture,
-                regionReady);
-
-
-    }
-
 
     private TextureRegionDrawable getWindowBackground() {
         Pixmap bgPixmap = new Pixmap(1,
                 1,
                 Pixmap.Format.RGB565);
-        bgPixmap.setColor(Color.GRAY);
+        bgPixmap.setColor(Color.rgb565(0.09f,
+                0.094f,
+                0.106f));
         bgPixmap.fill();
         return new TextureRegionDrawable(new TextureRegion(new Texture(bgPixmap)));
     }
-
-    private TextureRegionDrawable getContainerBackground() {
-        Pixmap bgPixmap = new Pixmap(1,
-                1,
-                Pixmap.Format.RGB565);
-        bgPixmap.setColor(Color.BROWN);
-        bgPixmap.fill();
-        return new TextureRegionDrawable(new TextureRegion(new Texture(bgPixmap)));
-    }
-
-    private void back() {
-        game.setScreen(new MenuScreen(game));
-    }
-
 
     @Override
     public void resize(int width,
@@ -470,5 +309,105 @@ public class OptionsScreen extends ScreenAdapter {
         //to zoom out in
         debugCameraController.handleDebugInput(delta);
         debugCameraController.applyTo((OrthographicCamera) stage.getCamera());
+    }
+
+    TextureRegion getUnitViewTexture() {
+        return uiFactory.getTextureRegion(Color.DARK_GRAY);
+    }
+
+    TextureRegion getUnitViewReadyTexture() {
+        return uiFactory.getTextureRegion(Color.GREEN);
+    }
+
+    TextureRegion getUnitViewDamagedTexture() {
+        return uiFactory.getTextureRegion(Color.RED);
+    }
+
+    private void reset() {
+        this.shipViews.clear();
+        this.huds.clear();
+        show();
+    }
+
+
+    //to place a ship Randomly   on the board  not easy in my case
+    //1. get coordinates of GridTable , and width and height
+    //2. randomly create a Vector2 which position is going to be somewhere inside that table
+    //3. Actor actor=stage.hit(vector2) will get a gridUnit
+    //4. NOW OBTAINING A POSITION OF THAT FIRST CELL AND RANDOMLY CHOOSING VERT/hORI POSITION
+    //5 REPEAT FOR AS LONG AS N-LENGTH sHIPvIEW STAYS INSIDE A GRID ON FREE CELLS
+    public void autoPositionShipViews() {
+        for (Map.Entry<Integer, ShipView> entry : this.shipViews.entrySet()) {
+            int key = entry.getKey();
+            ShipView shipView = entry.getValue();
+            if (shipView.getShipStatus() == ShipStatus.training) {
+                autoPosition(shipView);
+            }
+        }
+    }
+
+    private void autoPosition(ShipView shipView) {
+        boolean answer = false;
+        this.stage.addActor(shipView);
+
+        shipView.randomizeDirection();
+        do {
+            ShipView autoShipView = placeShipViewRandomly(shipView);
+            answer = board.placeShipOnTheGrid(autoShipView);
+
+        } while (answer == false);
+        shipView.deployShip();
+        //logger.debug("coordinates:" + shipView.printPoints());
+
+    }
+
+    private ShipView placeShipViewRandomly(ShipView shipView) {
+        int xxRandom;
+        int yyRandom;
+        boolean isGridUnit = false;
+        Actor randomActor;
+        Table grid = this.stage.getRoot()
+                .findActor("GridTable");
+        float width = grid.getWidth();
+        float height = grid.getHeight();
+        vector2 = grid.localToStageCoordinates(vector2.setZero());
+        do {
+            int xTemp = (int) vector2.x + 4 + GameConfig.CELL_SIZE;
+            xxRandom = ThreadLocalRandom.current()
+                    .nextInt(xTemp,
+                            xTemp + 1 + (int) width);
+            yyRandom = ThreadLocalRandom.current()
+                    .nextInt((int) vector2.y + 4,
+                            (int) vector2.y + (int) height - 2 - GameConfig.CELL_SIZE);
+            randomActor = stage.hit(xxRandom,
+                    yyRandom,
+                    true);
+            if (randomActor instanceof GridUnit) {
+                if (shipView.getDirection() == Direction.Vertical) {
+                    if (((GridUnit) randomActor).getGridY() - shipView.getLength() >= 0) {
+
+                        isGridUnit = true;
+                    }
+                    //it is Horizontal
+                } else {
+
+                    if (((GridUnit) randomActor).getGridX() + shipView.getLength() <= 1 + GameConfig.getInstance()
+                            .getBoardWidth()) {
+                        isGridUnit = true;
+                    }
+                }
+
+
+            }
+
+        } while (isGridUnit == false);
+        Coordinate coordinate = ((GridUnit) randomActor).getCoordinate();
+        logger.debug("checking..length:" + shipView.getLength() + "coordinate :x" + ((GridUnit) randomActor).getGridX() + " y:" + ((GridUnit) randomActor).getGridY());
+        shipView.addCoordinatesAuto(coordinate);
+        vector2 = ((GridUnit) randomActor).localToStageCoordinates(vector2.setZero());
+        shipView.setPositionAlign(vector2.x,
+                vector2.y);
+        return shipView;
+
     }
 }

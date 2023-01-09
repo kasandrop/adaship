@@ -16,7 +16,8 @@ public class GameManager {
 
     private GameManager() {
         PREFS = Gdx.app.getPreferences(AdashipGame.class.getSimpleName());
-        highScore = PREFS.getInteger(HIGH_SCORE_KEY, 0);
+        highScore = PREFS.getInteger(HIGH_SCORE_KEY,
+                0);
 
     }
 
@@ -26,7 +27,8 @@ public class GameManager {
 
     public void updateHighScore(int score) {
         if (score > highScore) {
-            PREFS.putInteger(HIGH_SCORE_KEY, score);
+            PREFS.putInteger(HIGH_SCORE_KEY,
+                    score);
             PREFS.flush();
         }
         highScore = score;
