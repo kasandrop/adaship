@@ -49,20 +49,22 @@ public class UiFactory {
                              String name,
                              TextureRegion unitViewDamagedTexture,
                              TextureRegion unitViewTexture,
-                             TextureRegion regionReady) {
+                             TextureRegion regionReady,
+                                    int cellSize) {
         return new ShipView(myIndex,
                 length,
                 name,
                 Direction.Horizontal,
                 unitViewDamagedTexture,
                 unitViewTexture,
-                regionReady);
+                regionReady,cellSize);
 
 
     }
 
     public Table getGrid(int sizeX,
-                          int sizeY) {
+                          int sizeY,
+                         int cellsize) {
         Table table = new Table(skin);
         for (int i = 0; i <= sizeY; i++) {
             table.row();
@@ -83,7 +85,7 @@ public class UiFactory {
                 } else {
                     final GridUnit unitActor = new GridUnit(getGridViewTexture(),
                             j,
-                            i);
+                            i,cellsize);
                     unitActor.setTouchable(Touchable.enabled);
 
                     table.add(unitActor)

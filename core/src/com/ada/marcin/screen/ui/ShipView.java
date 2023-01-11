@@ -34,6 +34,7 @@ public class ShipView extends Container<HorizontalGroup> {
     private TextureRegion regionReady;
     private int boatIDX;
     private int damage;
+    private int cellSize;
     private ShipStatus shipStatus;
     public static final Logger logger = new Logger(ShipView.class.getName(),
             Logger.DEBUG);
@@ -55,7 +56,8 @@ public class ShipView extends Container<HorizontalGroup> {
                     Direction direction,
                     TextureRegion regionDamaged,
                     TextureRegion regionNotDamaged,
-                    TextureRegion regionReady) {
+                    TextureRegion regionReady,
+                     int cellSize) {
         super();
         this.horizontalGroup = new HorizontalGroup();
         this.horizontalGroup.space(2f);
@@ -70,17 +72,21 @@ public class ShipView extends Container<HorizontalGroup> {
         this.regionReady = regionReady;
         this.damage = 0;
         this.shipStatus = ShipStatus.training;
+        this.cellSize=cellSize;
         //height of the group sum of the row heights
-
         init();
     }
     //private Direction direction;
 
+    /**
+     *
+     */
     private void init() {
         for (int i = 0; i < this.length; i++) {
             UnitActor shipUnit = new ShipUnit(regionDamaged,
                     regionNotDamaged,
-                    regionReady);
+                    regionReady,
+                    cellSize);
             this.horizontalGroup.addActor(shipUnit);
         }
         this.horizontalGroup.setDebug(true);
@@ -114,6 +120,11 @@ public class ShipView extends Container<HorizontalGroup> {
 
     /*
     when dropping a ship on the layout function it is going to be nicely align to the grid, thanks to that function
+     */
+
+    /*
+     * @param x
+     * @param y
      */
     public void setPositionAlign(float x,
                                  float y) {

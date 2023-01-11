@@ -17,7 +17,9 @@ public class GridUnit extends UnitActor {
 
     public GridUnit(TextureRegion textureRegion,
                     int x,
-                    int y) {
+                    int y,
+                    int cellSize) {
+        super(cellSize);
         this.regionCurrent = textureRegion;
         this.coordinate = new Coordinate(x,
                 y);

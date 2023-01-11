@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Logger;
 
 
 public class UnitActor extends Actor {
+    protected int cellSize;
 
     public static final Logger logger = new Logger(UnitActor.class.getName(),
             Logger.DEBUG);
@@ -18,13 +19,14 @@ public class UnitActor extends Actor {
     protected TextureRegion regionCurrent;
 
 
-    public UnitActor() {
+
+    public UnitActor(int cellSize) {
+        this.cellSize=cellSize;
         init();
     }
 
     private void init() {
-        setSize(GameConfig.CELL_SIZE,
-                GameConfig.CELL_SIZE);
+        setSize(this.cellSize,this.cellSize);
         setOrigin(Align.center);
     }
 

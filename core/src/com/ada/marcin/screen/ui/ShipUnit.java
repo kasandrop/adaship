@@ -17,7 +17,9 @@ public class ShipUnit extends UnitActor {
 
     public ShipUnit(TextureRegion regionDamaged,
                     TextureRegion regionNotDamaged,
-                    TextureRegion regionReady) {
+                    TextureRegion regionReady,
+                    int cellSize) {
+        super(cellSize);
         this.regionNotDamaged = regionNotDamaged;
         this.regionDamaged = regionDamaged;
         this.regionCurrent = regionNotDamaged;
