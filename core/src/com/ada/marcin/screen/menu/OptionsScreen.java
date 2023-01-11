@@ -67,6 +67,7 @@ public class OptionsScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+
         board = new Board(GameConfig.getInstance()
                 .getBoardWidth(),
                 GameConfig.getInstance()
@@ -125,7 +126,8 @@ public class OptionsScreen extends ScreenAdapter {
                     boat.getName(),
                     getUnitViewDamagedTexture(),
                     getUnitViewTexture(),
-                    getUnitViewReadyTexture());
+                    getUnitViewReadyTexture(),
+                    GameConfig.CELL_SIZE);
             this.shipViews.put(myIndex,
                     shipView);
             HUD hud = new HUD(skin,
@@ -261,7 +263,8 @@ public class OptionsScreen extends ScreenAdapter {
         Table tbl = uiFactory.getGrid(GameConfig.getInstance()
                         .getBoardWidth(),
                 GameConfig.getInstance()
-                        .getBoardHeight());
+                        .getBoardHeight(),
+                GameConfig.CELL_SIZE);
         tbl.setName("GridTable");
         table.add(tbl);
         table.add(uiFactory.ContainerWithShipView(this.shipViews));

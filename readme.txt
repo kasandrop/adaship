@@ -15,5 +15,13 @@ Collections that additionally guarantee that no change in the Collection object 
 Collections that are not immutable are mutable.
 
 
-
+next to do
+1.add button ai control
+2. add status to the shipview aicontrol
+3. make shipviews invisible
+4. autoplacemnt
+5  in main menu replace textbutton on check/uncheck button
+6. player class
+7. game play
+8  code
 
