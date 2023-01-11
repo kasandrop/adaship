@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /*
@@ -49,6 +50,9 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
     }
 
 
+   public  Set<Coordinate> getCoordinates(){
+        return this.board.keySet();
+    }
     private boolean isPlacementAllowed(List<Coordinate> coordinates) {
         logger.debug("isPlacementAllowed()");
         Direction direction = Board.checkDirection(coordinates);
@@ -83,7 +87,7 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
             yMax = Math.min(yMax,
                     this.rows);
 
-            if (isCellOcupied(yMin,
+            if (isCellOccupied(yMin,
                     yMax,
                     xMin,
                     xMax)) return false;
@@ -117,7 +121,7 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
             xMax = Math.min(xMax,
                     this.columns);
 
-            if (isCellOcupied(yMin,
+            if (isCellOccupied(yMin,
                     yMax,
                     xMin,
                     xMax)) return false;
@@ -126,10 +130,10 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
 
     }
 
-    private boolean isCellOcupied(int yMin,
-                                  int yMax,
-                                  int xMin,
-                                  int xMax) {
+    private boolean isCellOccupied(int yMin,
+                                   int yMax,
+                                   int xMin,
+                                   int xMax) {
         for (int yy = yMin; yy <= yMax; yy++) {
             logger.debug("\n");
             for (int xx = xMin; xx <= xMax; xx++) {

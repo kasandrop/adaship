@@ -31,6 +31,10 @@ public class UnitActor extends Actor {
     }
 
 
+    public void setRegionCurrent(TextureRegion regionCurrent) {
+        this.regionCurrent = regionCurrent;
+    }
+
     @Override
     public void draw(Batch batch,
                      float parentAlpha) {

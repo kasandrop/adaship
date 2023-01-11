@@ -10,6 +10,10 @@ public class AssetsDescriptor {
             new AssetDescriptor<BitmapFont>(AssetPaths.UI_FONT,
                     BitmapFont.class);
 
+    public static final AssetDescriptor<BitmapFont> FONT_SMALL =
+            new AssetDescriptor<BitmapFont>(AssetPaths.UI_FONT_SMALL,
+                    BitmapFont.class);
+
 
     public static final AssetDescriptor<TextureAtlas> GAME_PLAY =
             new AssetDescriptor<TextureAtlas>(AssetPaths.GAME_PLAY,

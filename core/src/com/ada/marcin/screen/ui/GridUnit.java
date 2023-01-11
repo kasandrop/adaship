@@ -11,6 +11,7 @@ public class GridUnit extends UnitActor {
 
 
     private Coordinate coordinate;
+    private TextureRegion spareTexture;
 
     public static final Logger logger = new Logger(GridUnit.class.getName(),
             Logger.DEBUG);
@@ -26,18 +27,13 @@ public class GridUnit extends UnitActor {
 
     }
 
-    public void changeColor() {
-        this.regionCurrent = getUnitViewTexture();
+
+    @Override
+    public void setRegionCurrent(TextureRegion regionCurrent) {
+        super.setRegionCurrent(regionCurrent);
     }
 
-    TextureRegion getUnitViewTexture() {
-        Pixmap pixmapShip = new Pixmap(1,
-                1,
-                Pixmap.Format.RGBA8888);
-        pixmapShip.setColor(Color.DARK_GRAY);
-        pixmapShip.fill();
-        return new TextureRegion(new Texture(pixmapShip));
-    }
+
 
     public int getGridX() {
 

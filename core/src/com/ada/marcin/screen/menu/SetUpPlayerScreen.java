@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
@@ -32,10 +33,10 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class OptionsScreen extends ScreenAdapter {
+public class SetUpPlayerScreen extends ScreenAdapter {
 
 
-    public static final Logger logger = new Logger(OptionsScreen.class.getName(),
+    public static final Logger logger = new Logger(SetUpPlayerScreen.class.getName(),
             Logger.DEBUG);
 
     private final AdashipGame game;
@@ -57,9 +58,11 @@ public class OptionsScreen extends ScreenAdapter {
     private List<HUD> huds = new ArrayList<>();
     private Skin skin;
     private UiFactory uiFactory;
+    private Player player;
 
-    public OptionsScreen(AdashipGame game) {
+    public SetUpPlayerScreen(AdashipGame game,Player player) {
         this.game = game;
+        this.player=player;
         this.assetManager = game.getAssetManager();
         this.uiFactory = new UiFactory(this.assetManager);
         this.skin = assetManager.get(AssetsDescriptor.UISKIN);
@@ -81,13 +84,13 @@ public class OptionsScreen extends ScreenAdapter {
                 skin,
                 "default");
         this.resetButton.setRound(true);
-        this.resetButton.addListener(new ClickListener() {
+        this.resetButton.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event,
-                                float x,
-                                float y) {
-                reset();
+            public void changed(ChangeEvent event, Actor actor) {
+                onResetClicked();
             }
+
+
         });
 
         this.buttonAuto = new TextButton("Auto Place",
@@ -95,20 +98,26 @@ public class OptionsScreen extends ScreenAdapter {
                 "default");
         buttonAuto.setRound(true);
 
-        buttonAuto.addListener(new ClickListener() {
+        buttonAuto.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event,
-                                float x,
-                                float y) {
-                autoPositionShipViews();
+            public void changed(ChangeEvent event, Actor actor) {
+                onAutoClicked();
             }
         });
+
+
 
         this.saveButton = new SaveButton("Save your shipboard",
                 skin,
                 "default",
                 GameConfig.getInstance()
                         .getCountOfBoats());
+        this.saveButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onSaveClicked();
+            }
+        });
         Gdx.input.setInputProcessor(stage);
         initShipsViews();
         initUi();
@@ -270,9 +279,9 @@ public class OptionsScreen extends ScreenAdapter {
         table.add(uiFactory.ContainerWithShipView(this.shipViews));
         table.row();
         table.add(uiFactory.getInfoPanel(this.huds));
-        table.add(uiFactory.getButtons(this.saveButton,
+        table.add(uiFactory.getButtons(Arrays.asList(this.saveButton,
                 this.resetButton,
-                this.buttonAuto));
+                this.buttonAuto)));
         table.background(getWindowBackground());
         table.center();
         table.setFillParent(true);
@@ -326,10 +335,17 @@ public class OptionsScreen extends ScreenAdapter {
         return uiFactory.getTextureRegion(Color.RED);
     }
 
-    private void reset() {
+    private void onResetClicked() {
         this.shipViews.clear();
         this.huds.clear();
         show();
+    }
+
+    private void onSaveClicked(){
+        this.player.setPlayerSetup(PlayerSetup.Ready);
+        this.player.setBoard(this.board);
+        this.game.setScreen(new MenuScreen(this.game));
+
     }
 
 
@@ -339,7 +355,7 @@ public class OptionsScreen extends ScreenAdapter {
     //3. Actor actor=stage.hit(vector2) will get a gridUnit
     //4. NOW OBTAINING A POSITION OF THAT FIRST CELL AND RANDOMLY CHOOSING VERT/hORI POSITION
     //5 REPEAT FOR AS LONG AS N-LENGTH sHIPvIEW STAYS INSIDE A GRID ON FREE CELLS
-    public void autoPositionShipViews() {
+    public void onAutoClicked() {
         for (Map.Entry<Integer, ShipView> entry : this.shipViews.entrySet()) {
             int key = entry.getKey();
             ShipView shipView = entry.getValue();

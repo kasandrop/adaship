@@ -2,6 +2,8 @@ package com.ada.marcin.config;
 
 
 import com.ada.marcin.model.Boat;
+import com.ada.marcin.model.Player;
+import com.ada.marcin.model.PlayerSetup;
 import com.ada.marcin.screen.loading.LoadingScreen;
 import com.badlogic.gdx.utils.Logger;
 
@@ -17,7 +19,29 @@ public class GameConfig {
     private int boardWidth;
     private int boardHeight;
     private final List<Boat> boats = new ArrayList<>();
+    private Player player1;
+    private Player player2;
 
+  /**
+   * if not set null is returned
+   */
+    public Player getPlayer1() {
+
+        return player1;
+    }
+
+    public void setPlayer1(Player player1) {
+        this.player1 = player1;
+    }
+
+    public void setPlayer2(Player player2) {
+        this.player2 = player2;
+    }
+
+    public Player getPlayer2() {
+
+        return player2;
+    }
 
     public static GameConfig getInstance() {
         if (instance == null) {
@@ -44,7 +68,11 @@ public class GameConfig {
                        int boardHeight) {
         this.boardWidth = boardWidth;
         this.boardHeight = boardHeight;
-        logger.debug("width:"+this.getBoardWidth()+" board height:"+this.getBoardHeight());
+        player1=new Player(PlayerSetup.Awaits);
+        player1.setName("Player1");
+        player2=new Player(PlayerSetup.Awaits);
+        player2.setName("Player2");
+        logger.debug("GameConfig constructor private:Should be run only once");
     }
 
     public void registerBoat(Boat boat) {
@@ -68,6 +96,7 @@ public class GameConfig {
     }
 
     public static final int CELL_SIZE = 24;
+    public static final int SMALL_CELL_SIZE = 16;
 
     //amount of columns in a board
     public static final int sizeX = 10;

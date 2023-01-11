@@ -52,6 +52,7 @@ public class LoadingScreen extends ScreenAdapter {
         bitmapFont = new BitmapFont();
         spriteBatch = new SpriteBatch();
 
+        assetManager.load(AssetsDescriptor.FONT_SMALL);
         assetManager.load(AssetsDescriptor.FONT);
         assetManager.load(AssetsDescriptor.GAME_PLAY);
         assetManager.load(AssetsDescriptor.UISKIN);

@@ -5,6 +5,8 @@ public class AssetPaths {
 
     public static final String UI_FONT = "assets/ui/default.fnt";
 
+    public static final String UI_FONT_SMALL = "assets/ui/small.fnt";
+
     public static final String GAME_PLAY = "assets/gameplay/gameplay.atlas";
 
 

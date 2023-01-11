@@ -3,6 +3,9 @@ package com.ada.marcin.screen.menu;
 import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
 import com.ada.marcin.config.GameConfig;
+import com.ada.marcin.model.Player;
+import com.ada.marcin.model.PlayerSetup;
+import com.ada.marcin.screen.game.GameScreen;
 import com.ada.marcin.screen.ui.UiFactory;
 import com.ada.marcin.util.GdxUtils;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +13,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -41,16 +45,21 @@ public class MenuScreen extends ScreenAdapter {
     }
 
     private void initUi() {
+        PlayerSetup playerSetup1=GameConfig.getInstance().getPlayer1().getPlayerSetup();
+        PlayerSetup playerSetup2=GameConfig.getInstance().getPlayer2().getPlayerSetup();
+
         Table table = uiFactory.createTableForBackground();
         Table buttonTable = uiFactory.createContainerForButtons();
 
         //play button
         TextButton playButton = new TextButton("PLAY",
-                skin);
-        playButton.getLabel()
-                .setFontScale(2,
-                        2);
+                skin,"default");
         playButton.pad(20);
+        if(playerSetup2==PlayerSetup.Ready  && playerSetup1==PlayerSetup.Ready  ){
+            playButton.setDisabled(false);
+        }else{
+            playButton.setDisabled(true);
+        }
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event,
@@ -58,59 +67,65 @@ public class MenuScreen extends ScreenAdapter {
                 play();
             }
         });
-        //high score button
-        TextButton highScoreButton = new TextButton("High Score",
-                skin);
-        highScoreButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event,
-                                Actor actor) {
-                highScore();
-            }
-        });
-        //options
-        TextButton player1Button = new TextButton("Player 1. Set up the game",
-                skin);
-        player1Button.getLabel()
-                .setFontScale(2,
-                        2);
-        player1Button.pad(20);
-        player1Button.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event,
-                                Actor actor) {
-                setUpPlayer1();
-            }
-        });
-        //quite button
 
-        TextButton player2Button = new TextButton("Player 2. Set up the game",
-                skin);
-        player2Button.getLabel()
-                .setFontScale(2,
-                        2);
-        player2Button.pad(20);
-        player2Button.addListener(new ChangeListener() {
+        //setup Player1
+        TextButton player1SetupButton = new TextButton("Player 1", skin,"toggle");
+         player1SetupButton.pad(20);
+
+        if(playerSetup1==PlayerSetup.Ready  ){
+            player1SetupButton.setChecked(true);
+        }
+        player1SetupButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event,
                                 Actor actor) {
-                setUpPlayer2();
+                onPlayer1SetupClick();
             }
         });
 
+        //button 2
+        TextButton player2SetupButton = new TextButton("Player 2",
+                skin,"toggle");
+        player2SetupButton.pad(20);
+        if(playerSetup2==PlayerSetup.Ready  ){
+            player2SetupButton.setChecked(true);
+        }
+        player2SetupButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event,
+                                Actor actor) {
+                onPlayer2SetupClick();
+            }
+        });
+
+        //reset
+        TextButton resetButton = new TextButton("Reset Players SetUp",
+                skin,"default");
+        resetButton.pad(20);
+        resetButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event,
+                                Actor actor) {
+                onResetClick();
+            }
+        });
         //setup table
 
         buttonTable.add(playButton)
                 .width(400)
                 .row();
         // buttonTable.add(player2Button).row();
-        buttonTable.add(player1Button)
+        buttonTable.add(player1SetupButton)
                 .width(400)
                 .row();
-        buttonTable.add(player2Button)
+        buttonTable.add(player2SetupButton)
+                .width(400)
+                .row();
+        buttonTable.add(resetButton)
                 .width(400)
                 .row();
 
+        buttonTable.setBackground("dialogTrans");
         table.add(buttonTable);
 
         table.center();
@@ -123,21 +138,26 @@ public class MenuScreen extends ScreenAdapter {
 
     private void play() {
 
-        // game.setScreen(new GameScreen(game));
+        game.setScreen(new GameScreen(game,GameConfig.getInstance().getPlayer1()));
     }
 
-    private void highScore() {
-        game.setScreen(new HighScoreScreen(game));
-    }
-
-    private void setUpPlayer1() {
+    private void onPlayer1SetupClick() {
         logger.debug("setUpPlayer1()");
-        game.setScreen(new OptionsScreen(game));
+        Player player1=GameConfig.getInstance().getPlayer1();
+        game.setScreen(new SetUpPlayerScreen(game,player1));
     }
 
-    private void setUpPlayer2() {
+    private void onPlayer2SetupClick() {
         logger.debug("setUpPlayer2()");
-        game.setScreen(new OptionsScreen(game));
+        Player player2=GameConfig.getInstance().getPlayer2();
+        game.setScreen(new SetUpPlayerScreen(game,player2));
+    }
+
+    private  void onResetClick(){
+        logger.debug("reset button()");
+        GameConfig.getInstance().getPlayer1().resetPlayer();
+        GameConfig.getInstance().getPlayer2().resetPlayer();
+        game.setScreen(new MenuScreen(game));
     }
 
 

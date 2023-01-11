@@ -4,7 +4,6 @@ import com.ada.marcin.model.Coordinate;
 import com.ada.marcin.model.Direction;
 import com.ada.marcin.model.ShipEvent;
 import com.ada.marcin.model.ShipStatus;
-import com.ada.marcin.screen.menu.OptionsScreen;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;

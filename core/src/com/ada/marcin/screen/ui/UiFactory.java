@@ -62,6 +62,7 @@ public class UiFactory {
 
     }
 
+
     public Table getGrid(int sizeX,
                           int sizeY,
                          int cellsize) {
@@ -72,23 +73,23 @@ public class UiFactory {
 
                 if (i == 0 && j != 0) {
                     Label label = new Label(Coordinate.columnLabel(j),
-                            skin);
+                            skin,"small");
                     table.add(label);
                 } else if (j == 0 && i != 0) {
 
                     String number = String.valueOf(i);
                     Label label = new Label(number,
                             skin,
-                            "default");
-
+                            "small");
                     table.add(label);
                 } else {
-                    final GridUnit unitActor = new GridUnit(getGridViewTexture(),
+                    final GridUnit gridUnit = new GridUnit(getGridViewTexture(),
                             j,
                             i,cellsize);
-                    unitActor.setTouchable(Touchable.enabled);
+                    gridUnit.setTouchable(Touchable.enabled);
 
-                    table.add(unitActor)
+                    gridUnit.setName(new Coordinate(j,i).toString());
+                    table.add(gridUnit)
                             .space(2);
                 }
 
@@ -106,7 +107,7 @@ public class UiFactory {
     }
 
     public Table createContainerForButtons() {
-        Table buttonTable = new Table();
+        Table buttonTable = new Table(skin);
         buttonTable.defaults()
                 .pad(20);
         buttonTable.center();
@@ -124,27 +125,12 @@ public class UiFactory {
 
 
 
-    public  Table getButtons(SaveButton saveButton,TextButton buttonReset,TextButton buttonAuto) {
+    public  Table getButtons(List<TextButton> buttons) {
         Table table = new Table();
-
-
-
-
-        saveButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event,
-                                float x,
-                                float y) {
-                logger.debug("Save Button clicked");
-            }
-        });
-        table.add(saveButton).fill().pad(10);
+    for(TextButton textButton :buttons){
+        table.add(textButton).fill().pad(10);
         table.row();
-        table.add  (buttonAuto).fill().pad(10);
-        table.row();
-        table.add  (buttonReset).fill().pad(10);
-
-
+    }
 
         return table;
 
