@@ -65,11 +65,13 @@ public class UiFactory {
 
     public Table getGrid(int sizeX,
                           int sizeY,
-                         int cellsize) {
+                         int cellsize,
+                         Touchable touchable) {
         Table table = new Table(skin);
         for (int i = 0; i <= sizeY; i++) {
             table.row();
             for (int j = 0; j <= sizeX; j++) {
+
 
                 if (i == 0 && j != 0) {
                     Label label = new Label(Coordinate.columnLabel(j),
@@ -86,7 +88,7 @@ public class UiFactory {
                     final GridUnit gridUnit = new GridUnit(getGridViewTexture(),
                             j,
                             i,cellsize);
-                    gridUnit.setTouchable(Touchable.enabled);
+                    gridUnit.setTouchable(touchable);
 
                     gridUnit.setName(new Coordinate(j,i).toString());
                     table.add(gridUnit)

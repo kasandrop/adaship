@@ -9,7 +9,6 @@ import com.ada.marcin.screen.ui.*;
 import com.ada.marcin.util.GdxUtils;
 import com.ada.marcin.util.debug.DebugCameraController;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.*;
@@ -22,13 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Logger;
-import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -42,6 +39,8 @@ public class GameScreen extends ScreenAdapter {
 
     private Player player;
 
+    private Player opponent;
+
 
     private TextButton nextButton;
 
@@ -54,12 +53,13 @@ public class GameScreen extends ScreenAdapter {
     private Skin skin;
     private UiFactory uiFactory;
 
-    public GameScreen(AdashipGame game, Player player) {
+    public GameScreen(AdashipGame game, Player player,Player opponent) {
         this.game = game;
         this.assetManager = game.getAssetManager();
         this.uiFactory = new UiFactory(this.assetManager);
         this.skin = assetManager.get(AssetsDescriptor.UISKIN);
         this.player = player;
+        this.opponent=opponent;
     }
 
     @Override
@@ -83,8 +83,9 @@ public class GameScreen extends ScreenAdapter {
                 }
         );
         Gdx.input.setInputProcessor(stage);
-        // initShipsViews();
+        createHUDpanel();
         initUi();
+
         updatePlayer();
 
     }
@@ -93,36 +94,59 @@ public class GameScreen extends ScreenAdapter {
     private void onNextButtonClick() {
         Player player1 = GameConfig.getInstance().getPlayer1();
         Player player2 = GameConfig.getInstance().getPlayer2();
-        this.player = this.player == player1 ? player2 : player1;
+        this.player = (this.player == player1 )? player2 : player1;
+        for(Boat boat :GameConfig.getInstance()
+                .getBoats()){
+           HUD hud= this.stage.getRoot().findActor(boat.getBoatIdx()+"HUD");
+           hud.resetCoordinate();
+        }
+
         this.updatePlayer();
+
     }
 
     private void updatePlayer() {
+       // this.huds.clear();
+
+
+        logger.debug( "Player:"+this.player.getName());
+       Label title= this.stage.getRoot().findActor("title");
+       title.setText(this.player.getName());
         Table shipboard = this.stage.getRoot().findActor("Shipboard");
 //SnapshotArray is libgdx inner data type .SnapshotArray    allows to change  its  element during iteration.
         // SnapshotArray<Actor>gridUnits=   shipboard.getChildren();
+        //resetting grid units
         for (Actor actor : shipboard.getChildren()) {
             if (actor instanceof GridUnit) {
                 ((GridUnit) actor).setRegionCurrent(getGridUnitTexture()) ;
             }
-
-
         }
-        Set<Coordinate> keys = this.player.getBoard().getCoordinates();
+        Set<Coordinate> keys = this.player.getBoard().getKeys();
         for (Coordinate key : keys) {
             String name = key.toString();
             GridUnit gridUnit = this.stage.getRoot().findActor(name);
             gridUnit.setRegionCurrent(getUnitViewReadyTexture());
+            CellContent cellContent=player.getBoard().getValue(key);
+
+            HUD foundHud = this.stage.getRoot().findActor(cellContent.getBoatIdx()+"HUD");
+
+
+
+            foundHud.addCoordinate(key.toString());
+            if(cellContent.isDamaged()){
+                foundHud.addOneToTheDamage();
+            }
         }
     }
 
     private void initUi() {
         Table table = new Table();
+        table.background(getWindowBackground());
         Table shipboard = uiFactory.getGrid(GameConfig.getInstance()
                         .getBoardWidth(),
                 GameConfig.getInstance()
                         .getBoardHeight(),
-                GameConfig.SMALL_CELL_SIZE);
+                GameConfig.SMALL_CELL_SIZE,Touchable.disabled);
         shipboard.setName("Shipboard");
         shipboard.row();
         shipboard.add(new Label("Ship Board", this.skin)).colspan(shipboard.getColumns());
@@ -131,11 +155,26 @@ public class GameScreen extends ScreenAdapter {
                         .getBoardWidth(),
                 GameConfig.getInstance()
                         .getBoardHeight(),
-                GameConfig.SMALL_CELL_SIZE);
+                GameConfig.SMALL_CELL_SIZE,Touchable.enabled);
         targetBoard.setName("TargetBoard");
         targetBoard.row();
         targetBoard.add(new Label("Target Board", this.skin)).colspan(shipboard.getColumns());
-        targetBoard.addListener(new ClickListener(){
+        targetBoard.addListener(new InputListener(){
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                   Actor actor=event.getTarget();
+               if( actor   instanceof GridUnit){
+                   logger.debug("name :"+ actor.getName());
+               }
+
+            }
+
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
 
@@ -155,17 +194,19 @@ public class GameScreen extends ScreenAdapter {
 
         SplitPane splitAbout = new SplitPane(new ScrollPane(shipboard,skin,"default"), new ScrollPane(targetBoard,skin,"default"), false, skin,"default-horizontal");
         splitAbout.setSplitAmount(0.4f);
-
-
+        Label titleLabel=new Label (this.player.getName(),skin,"title");
+        titleLabel.setName("title");
+        titleLabel.setFontScale(2.2f);
+        table.add(titleLabel).colspan(2).pad(26) ;
         table.row();
-        table.add(splitAbout);
+        table.add(splitAbout).colspan(2);
 
         table.row();
 
 
         table.add(uiFactory.getInfoPanel(this.huds));
         table.add(uiFactory.getButtons(Arrays.asList(this.nextButton)));
-        table.background(getWindowBackground());
+
         table.center();
         table.setFillParent(true);
         table.pack();
@@ -176,6 +217,22 @@ public class GameScreen extends ScreenAdapter {
         debugCameraController = new DebugCameraController();
         debugCameraController.setStartPosition((float) GameConfig.WINDOWS_WIDTH / 2,
                 (float) GameConfig.WINDOWS_HEIGHT / 2);
+    }
+
+    private void createHUDpanel() {
+
+        List<Boat> myBoats = GameConfig.getInstance()
+                .getBoats();
+        for (Boat boat : myBoats) {
+            HUD hud = new HUD(skin,
+                    boat.getBoatIdx() ,
+                    boat.getName(),
+                    boat.getLength(),
+                    0 ,
+                    ShipStatus.deployed.toString());
+
+            this.huds.add(hud);
+        }
     }
 
     private TextureRegionDrawable getWindowBackground() {

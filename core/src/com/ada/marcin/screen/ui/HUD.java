@@ -8,12 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class HUD extends Table implements Observer {
 
     private Skin skin;
-    private String boatIDX;
+    private int boatIDX;
     private String name;
-    private String length;
-    private String damage;
+    private int length;
+    private int damage;
     private String status;
-    private ShipView shipView;
     private Label lblBoatIDX;
     private Label lblName;
     private Label lblLength;
@@ -23,10 +22,10 @@ public class HUD extends Table implements Observer {
 
 
     public HUD(Skin skin,
-               String boatIDX,
+               int boatIDX,
                String name,
-               String length,
-               String damage,
+               int length,
+               int damage,
                String status) {
         super(skin);
         this.skin = skin;
@@ -40,6 +39,7 @@ public class HUD extends Table implements Observer {
 
 
     private void init() {
+        this.setName(boatIDX+"HUD");
         this.lblBoatIDX = new Label(this.boatIDX + "",
                 skin);
         this.lblName = new Label(this.name + "",
@@ -72,6 +72,18 @@ public class HUD extends Table implements Observer {
         this.row();
         this.pad(1);
 
+
+    }
+    public void resetCoordinate(){
+        this.lblCoordinates.setText("");
+    }
+    public void addCoordinate(String coordinate){
+         String  textFromLabel=this.lblCoordinates.getText().toString();
+        this.lblCoordinates.setText(textFromLabel+" "+coordinate);
+    }
+    public void  addOneToTheDamage(){
+        this.damage++;
+        this.lblDamage.setText(this.damage);
 
     }
 

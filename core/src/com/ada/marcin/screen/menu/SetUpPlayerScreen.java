@@ -60,9 +60,9 @@ public class SetUpPlayerScreen extends ScreenAdapter {
     private UiFactory uiFactory;
     private Player player;
 
-    public SetUpPlayerScreen(AdashipGame game,Player player) {
+    public SetUpPlayerScreen(AdashipGame game, Player player) {
         this.game = game;
-        this.player=player;
+        this.player = player;
         this.assetManager = game.getAssetManager();
         this.uiFactory = new UiFactory(this.assetManager);
         this.skin = assetManager.get(AssetsDescriptor.UISKIN);
@@ -106,7 +106,6 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         });
 
 
-
         this.saveButton = new SaveButton("Save your shipboard",
                 skin,
                 "default",
@@ -119,37 +118,47 @@ public class SetUpPlayerScreen extends ScreenAdapter {
             }
         });
         Gdx.input.setInputProcessor(stage);
+
+        initHUDs();
         initShipsViews();
         initUi();
         //logger.debug("origin x,y="+shipView.getWidth()/2+"  "+shipView.getHeight()/2);
     }
 
-    //2nd column   of the main table
-    private void initShipsViews() {
-        int myIndex = 0;
+
+    private void initHUDs() {
+
         List<Boat> myBoats = GameConfig.getInstance()
                 .getBoats();
         for (Boat boat : myBoats) {
-            final ShipView shipView = uiFactory.shipViewFactory(myIndex,
+            HUD hud = new HUD(skin,
+                    boat.getBoatIdx() ,
+                    boat.getName(),
+                    boat.getLength(),
+                    0 ,
+                    ShipStatus.training.toString());
+
+            this.huds.add(hud);
+        }
+    }
+
+    //2nd column   of the main table
+    private void initShipsViews() {
+        List<Boat> myBoats = GameConfig.getInstance()
+                .getBoats();
+        for (Boat boat : myBoats) {
+            final ShipView shipView = uiFactory.shipViewFactory(boat.getBoatIdx(),
                     boat.getLength(),
                     boat.getName(),
                     getUnitViewDamagedTexture(),
                     getUnitViewTexture(),
                     getUnitViewReadyTexture(),
                     GameConfig.CELL_SIZE);
-            this.shipViews.put(myIndex,
+            this.shipViews.put(boat.getBoatIdx(),
                     shipView);
-            HUD hud = new HUD(skin,
-                    myIndex + "",
-                    shipView.getName(),
-                    shipView.getLength() + "",
-                    shipView.getDamage() + "",
-                    shipView.getShipStatus()
-                            .toString());
+            HUD hud = this.huds.get(boat.getBoatIdx());
             shipView.addObserver(hud);
             shipView.addObserver(this.saveButton);
-            this.huds.add(hud);
-            myIndex++;
             shipView.addListener(new InputListener() {
                                      @Override
                                      public boolean touchDown(InputEvent event,
@@ -273,7 +282,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
                         .getBoardWidth(),
                 GameConfig.getInstance()
                         .getBoardHeight(),
-                GameConfig.CELL_SIZE);
+                GameConfig.CELL_SIZE,Touchable.enabled);
         tbl.setName("GridTable");
         table.add(tbl);
         table.add(uiFactory.ContainerWithShipView(this.shipViews));
@@ -341,7 +350,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         show();
     }
 
-    private void onSaveClicked(){
+    private void onSaveClicked() {
         this.player.setPlayerSetup(PlayerSetup.Ready);
         this.player.setBoard(this.board);
         this.game.setScreen(new MenuScreen(this.game));

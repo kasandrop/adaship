@@ -75,6 +75,7 @@ public class LoadingScreen extends ScreenAdapter {
 
 
         }
+        int boatIdx=0;
         for (int i = 1; i < data.length; i++) {
             if (data[i].contains("Boat")) {
                 String length = right((data[i].split(":"))[1],
@@ -82,10 +83,10 @@ public class LoadingScreen extends ScreenAdapter {
                 String name = left((data[i].split(":"))[1],
                         ",");
                 GameConfig.getInstance()
-                        .registerBoat(new Boat(name,
+                        .registerBoat(new Boat(boatIdx,name,
                                 Integer.parseInt(length.trim())));
             }
-
+            boatIdx++;
 
         }
         logger.debug("  size of created array:" + GameConfig.getInstance()

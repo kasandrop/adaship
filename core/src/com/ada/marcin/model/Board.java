@@ -50,7 +50,10 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
     }
 
 
-   public  Set<Coordinate> getCoordinates(){
+    public CellContent getValue(Coordinate key){
+        return this.board.get(key);
+    }
+   public  Set<Coordinate> getKeys(){
         return this.board.keySet();
     }
     private boolean isPlacementAllowed(List<Coordinate> coordinates) {

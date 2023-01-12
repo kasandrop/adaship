@@ -1,20 +1,20 @@
 package com.ada.marcin.model;
 
 public class CellContent {
-    private final int shipType;
+    private final int boatIdx;
     private final int indexOfTheShip;
     private boolean isDamaged;
 
-    public CellContent(int shipType,
+    public CellContent(int boatIdx,
                        int indexOfTheShip,
                        boolean isDamaged) {
-        this.shipType = shipType;
+        this.boatIdx = boatIdx;
         this.indexOfTheShip = indexOfTheShip;
         this.isDamaged = isDamaged;
     }
 
-    public int getShipType() {
-        return shipType;
+    public int getBoatIdx() {
+        return boatIdx;
     }
 
 

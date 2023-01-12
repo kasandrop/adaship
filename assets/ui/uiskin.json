@@ -2,10 +2,11 @@
   BitmapFont: { default-font: { file: default.fnt },
                   small-font:{  file:small.fnt } },
   Color: {
+    blue: {a:0.8, r:0, g:0, b:0.5},
     green: { a: 1, b: 0, g: 1, r: 0 },
     white: { a: 1, b: 1, g: 1, r: 1 },
     red: { a: 1, b: 0, g: 0, r: 1 },
-    black: { a: 1, b: 0, g: 0, r: 0 },
+    black: { a: 0.8, b: 0, g: 0, r: 0 },
     gray: { a: 1, b: 0.8, g: 0.8, r: 0.8 },
     dark_gray: { a: 1, b:0.5, g:  0.43, r: 0.4},
     white_transparent: { a: 0.21, b: 1, g: 1, r: 1 },
@@ -13,6 +14,7 @@
   TintedDrawable: {
     dialogDim: { name: default-round,  color: dark_gray},
     dialogTrans: { name: default-round-large,  color: white_transparent },
+    labelBackground:{name:panel ,color: blue}
   },
 
   ButtonStyle: {
@@ -51,6 +53,7 @@
   },
   LabelStyle: {
     default: { font: default-font, fontColor: white },
+    title: { font: default-font, fontColor: white,background:labelBackground},
     small: { font: small-font, fontColor: white }
   },
   TextFieldStyle: {
