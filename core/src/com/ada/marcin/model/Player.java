@@ -17,6 +17,8 @@ public class Player {
 
     private int[] shipLength;
 
+    public  boolean isAi;
+
 
 
     public Player(PlayerSetup playerSetup) {
@@ -99,4 +101,10 @@ public class Player {
     public Board getTargetBoard() {
         return targetBoard;
     }
+
+    public void setAi(boolean isAi) {
+        this.isAi=isAi;
+    }
+
+
 }

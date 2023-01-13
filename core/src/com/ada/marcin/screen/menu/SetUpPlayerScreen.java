@@ -48,6 +48,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
     private TextButton buttonAuto;
 
     private TextButton resetButton;
+    private final TextButton aiButton;
 
     //focus camera functionality and   camera movements.
     // just for debugging purposes
@@ -65,6 +66,8 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         this.assetManager = game.getAssetManager();
         this.uiFactory = new UiFactory(this.assetManager);
         this.skin = assetManager.get(AssetsDescriptor.UISKIN);
+        this.aiButton=new TextButton( "AI Plays", skin, "toggle");
+
     }
 
     @Override
@@ -104,6 +107,24 @@ public class SetUpPlayerScreen extends ScreenAdapter {
             }
         });
 
+        this.aiButton.setRound(true);
+        this.aiButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(aiButton.isChecked()){
+                    GameConfig.getInstance().getPlayer2().setAi(true);
+                    onResetClicked();
+                    onAutoClicked();
+                }
+                logger.debug("unchecked:"+actor.toString());
+                GameConfig.getInstance().getPlayer2().setAi(false);
+
+
+            }
+
+
+        });
+
 
         this.saveButton = new SaveButton("Save your shipboard",
                 skin,
@@ -116,6 +137,8 @@ public class SetUpPlayerScreen extends ScreenAdapter {
                 onSaveClicked();
             }
         });
+
+
         Gdx.input.setInputProcessor(stage);
 
         initHUDs();
@@ -135,7 +158,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
                     boat.getName(),
                     boat.getLength(),
                     0 ,
-                    ShipStatus.training.toString());
+                    ShipStatus.Training.toString());
 
             this.huds.add(hud);
         }
@@ -289,12 +312,13 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         table.add(uiFactory.getInfoPanel(this.huds));
         table.add(uiFactory.getButtons(Arrays.asList(this.saveButton,
                 this.resetButton,
-                this.buttonAuto)));
+                this.buttonAuto,
+                this.aiButton)));
         table.background(getWindowBackground());
         table.center();
         table.setFillParent(true);
         table.pack();
-        table.setDebug(true);
+       // table.setDebug(true);
         stage.addActor(table);
         // create debug camera controller
         debugCameraController = new DebugCameraController();
@@ -368,7 +392,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         for (Map.Entry<Integer, ShipView> entry : this.shipViews.entrySet()) {
             int key = entry.getKey();
             ShipView shipView = entry.getValue();
-            if (shipView.getShipStatus() == ShipStatus.training) {
+            if (shipView.getShipStatus() == ShipStatus.Training) {
                 autoPosition(shipView);
             }
         }

@@ -70,7 +70,7 @@ public class ShipView extends Container<HorizontalGroup> {
         this.regionDamaged = regionDamaged;
         this.regionReady = regionReady;
         this.damage = 0;
-        this.shipStatus = ShipStatus.training;
+        this.shipStatus = ShipStatus.Training;
         this.cellSize=cellSize;
         //height of the group sum of the row heights
         init();
@@ -152,7 +152,7 @@ public class ShipView extends Container<HorizontalGroup> {
      */
     public void deployShip() {
        // logger.debug("deployShip");
-        this.shipStatus = ShipStatus.deployed;
+        this.shipStatus = ShipStatus.Deployed;
         this.notifyObservers(ShipEvent.Deployment,
                 this.printPoints());
         //libgdx's SnapshotArray can be modified during iteration
@@ -173,7 +173,7 @@ public class ShipView extends Container<HorizontalGroup> {
                     this.printPoints());
         }
 
-        this.shipStatus = ShipStatus.training;
+        this.shipStatus = ShipStatus.Training;
 
         //  SnapshotArray<Actor>children= this.horizontalGroup.getChildren();
         //libgdx's SnapshotArray can be modified during iteration

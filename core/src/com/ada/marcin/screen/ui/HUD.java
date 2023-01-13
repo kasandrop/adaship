@@ -42,20 +42,20 @@ public class HUD extends Table implements Observer {
     private void init() {
         this.setName(boatIDX+"HUD");
         this.lblBoatIDX = new Label(this.boatIDX + "",
-                skin,"small");
+                skin,"default");
         this.lblName = new Label(this.name + "",
-                skin,"small");
+                skin,"default");
         this.lblLength = new Label(this.length + "",
-                skin,"small");
+                skin,"default");
 
         this.lblDamage = new Label(this.damage + "",
-                skin,"small");
+                skin,"default");
 
         this.lblStatus = new Label(this.status,
-                skin,"small");
+                skin,"default");
 
         this.lblCoordinates = new Label("",
-                skin,"small");
+                skin,"default");
 
 
         this.add(this.lblBoatIDX)
@@ -77,16 +77,13 @@ public class HUD extends Table implements Observer {
 
     public void reset(){
         this.lblCoordinates.setText("");
-        this.lblDamage.setText("");
-        this.lblStatus.setText("");
+        this.lblDamage.setText("0");
+        this.lblStatus.setText(ShipStatus.Deployed.toString());
         this.damage=0;
 
 
     }
 
-    public void  resetDamage(){
-        this.lblDamage.setText("");
-    }
     public void addCoordinate(String coordinate){
          String  textFromLabel=this.lblCoordinates.getText().toString();
         this.lblCoordinates.setText(textFromLabel+" "+coordinate);
@@ -94,9 +91,15 @@ public class HUD extends Table implements Observer {
     public void  addOneToTheDamage(){
         this.damage++;
         this.lblDamage.setText(this.damage);
+        this.setStatus(ShipStatus.Damaged.toString());
+        if( this.damage==this.length){
+            this.setStatus(ShipStatus.Sunk.toString());
+        }
 
     }
-
+    public void setStatus(String status){
+        this.lblStatus.setText(status);
+    }
 
     @Override
     public void notify(ShipEvent shipEvent,

@@ -5,6 +5,7 @@ import com.ada.marcin.AdashipGame;
 import com.ada.marcin.assets.AssetsDescriptor;
 import com.ada.marcin.config.GameConfig;
 import com.ada.marcin.model.*;
+import com.ada.marcin.screen.menu.MenuScreen;
 import com.ada.marcin.screen.ui.GridUnit;
 import com.ada.marcin.screen.ui.HUD;
 import com.ada.marcin.screen.ui.ShipView;
@@ -44,6 +45,9 @@ public class GameScreen extends ScreenAdapter {
 
 
     private TextButton nextButton;
+    private TextButton autoButton;
+
+    private TextButton menuButton;
 
     //focus camera functionality and   camera movements.
     // just for debugging purposes
@@ -83,6 +87,17 @@ public class GameScreen extends ScreenAdapter {
                 game.getBatch());
 
 
+        this.menuButton = new TextButton("Back To Menu",
+                skin,
+                "default");
+        this.menuButton.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        onMenuButtonClick();
+                    }
+                }
+        );
         this.nextButton = new TextButton("Next Player",
                 skin,
                 "default");
@@ -94,6 +109,18 @@ public class GameScreen extends ScreenAdapter {
                     }
                 }
         );
+
+        this.autoButton = new TextButton("Auto Torpedo",
+                skin,
+                "default");
+        this.autoButton.setRound(true);
+
+        autoButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onAutoClick();
+            }
+        });
         Gdx.input.setInputProcessor(stage);
         createHUDPanel();
         initUi();
@@ -181,9 +208,11 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    private void initUi(){
-        Label labelWinner=new Label("WINNER",skin,"winner");
-        labelWinner.setPosition((GameConfig.WINDOWS_WIDTH-labelWinner.getWidth())/2,(GameConfig.WINDOWS_HEIGHT-labelWinner.getHeight())/2);
+    private void initUi() {
+        Label labelWinner = new Label("WINNER", skin, "winner");
+        labelWinner.setPosition((GameConfig.WINDOWS_WIDTH - labelWinner.getWidth()) / 2, (GameConfig.WINDOWS_HEIGHT - labelWinner.getHeight()) / 2);
+        labelWinner.setName("Winner");
+        labelWinner.setVisible(false);
         Table table = new Table();
         table.background(getWindowBackground());
         Table shipboard = uiFactory.getGrid(GameConfig.getInstance()
@@ -241,11 +270,11 @@ public class GameScreen extends ScreenAdapter {
         table.add(splitAbout).colspan(2);
         table.row();
         table.add(uiFactory.getInfoPanel(this.huds));
-        table.add(uiFactory.getButtons(Arrays.asList(this.nextButton)));
+        table.add(uiFactory.getButtons(Arrays.asList(this.menuButton, this.autoButton, this.nextButton)));
         table.center();
         table.setFillParent(true);
         table.pack();
-        table.setDebug(true);
+        // table.setDebug(true);
         table.addActor(labelWinner);
         stage.addActor(table);
         // create debug camera controller
@@ -268,13 +297,25 @@ public class GameScreen extends ScreenAdapter {
       }else{
           gridUnit.setRegionCurrent(getUnitViewDamagedTexture());
       }
-      if(this.player.isPlayerAWinner()){
-          logger.debug("You have won. Winner :"+this.player.getName());
-      }
+        if (this.player.isPlayerAWinner()) {
+            logger.debug("You have won. Winner :" + this.player.getName());
+            Label labelWinner = this.stage.getRoot().findActor("Winner");
+            labelWinner.setVisible(true);
+            labelWinner.setText("Winner:" + this.player.getName());
+        }
 
     }
-    private void createHUDPanel() {
 
+    public void onMenuButtonClick() {
+        this.game.setScreen(new MenuScreen(game));
+    }
+
+    public void onAutoClick() {
+        GridUnit gridUnit = uiFactory.getGridUnit("TargetBoard", stage);
+        this.torpedo(gridUnit.getCoordinate(), gridUnit);
+    }
+
+    private void createHUDPanel() {
         List<Boat> myBoats = GameConfig.getInstance()
                 .getBoats();
         for (Boat boat : myBoats) {
@@ -283,7 +324,7 @@ public class GameScreen extends ScreenAdapter {
                     boat.getName(),
                     boat.getLength(),
                     0,
-                    ShipStatus.deployed.toString());
+                    ShipStatus.Deployed.toString());
 
             this.huds.add(hud);
         }
@@ -307,6 +348,7 @@ public class GameScreen extends ScreenAdapter {
                 height,
                 true);
     }
+
 
     @Override
     public void render(float delta) {
