@@ -16,7 +16,7 @@ Then this screen
  */
 public class Board {
     //if shot torpedo was unsuccessful   then this variable is null;
-    private Ship lastDamagedShip;
+
 
     // /
     private Map<Coordinate, CellContent> board = new HashMap<Coordinate, CellContent>();
@@ -49,9 +49,21 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
         return Direction.Horizontal;
     }
 
+    public void save(Coordinate coordinate,int boatIdx){
+        this.board.put(coordinate,new CellContent(boatIdx,1,true));
+
+    }
 
     public CellContent getValue(Coordinate key){
         return this.board.get(key);
+    }
+    public int hit(Coordinate coordinate){
+      CellContent cellContent=this.getValue(coordinate);
+      if(cellContent==null){
+          return -1;
+      }
+      cellContent.setDamaged(true);
+      return cellContent.getBoatIdx();
     }
    public  Set<Coordinate> getKeys(){
         return this.board.keySet();
@@ -164,10 +176,6 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
 
     //   }
 
-    boolean isShipSunk() {
-        if (this.lastDamagedShip != null) return this.lastDamagedShip.isShipSunk();
-        return false;
-    }
 
     public boolean placeShipOnTheGrid(ShipView shipView) {
         if (!isPlacementAllowed(shipView.getCoordinates())) {
@@ -194,5 +202,9 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
         }
         logger.debug("number of elements   after deletion :" + board.size());
 
+    }
+
+    public void clear() {
+        this.board.clear();
     }
 }

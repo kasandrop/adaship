@@ -1,6 +1,9 @@
 {
   BitmapFont: { default-font: { file: default.fnt },
-                  small-font:{  file:small.fnt } },
+                  small-font:{  file:small.fnt } ,
+                 winner-font:{file:winner.fnt}
+
+  },
   Color: {
     blue: {a:0.8, r:0, g:0, b:0.5},
     green: { a: 1, b: 0, g: 1, r: 0 },
@@ -15,6 +18,10 @@
     dialogDim: { name: default-round,  color: dark_gray},
     dialogTrans: { name: default-round-large,  color: white_transparent },
     labelBackground:{name:panel ,color: blue}
+    text-field: {
+      color: { hex: "#ffffff" }
+      name: "textfield",
+    }
   },
 
   ButtonStyle: {
@@ -54,10 +61,11 @@
   LabelStyle: {
     default: { font: default-font, fontColor: white },
     title: { font: default-font, fontColor: white,background:labelBackground},
-    small: { font: small-font, fontColor: white }
+    "small": { font: small-font, fontColor: white },
+    "winner": { font: winner-font  }
   },
   TextFieldStyle: {
-    default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor }
+    default: { selection: selection, background: text-field, font: default-font, fontColor: white, cursor: cursor }
   },
   CheckBoxStyle: {
     default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: white }

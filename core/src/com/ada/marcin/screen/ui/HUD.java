@@ -1,6 +1,7 @@
 package com.ada.marcin.screen.ui;
 
 import com.ada.marcin.model.ShipEvent;
+import com.ada.marcin.model.ShipStatus;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -41,20 +42,20 @@ public class HUD extends Table implements Observer {
     private void init() {
         this.setName(boatIDX+"HUD");
         this.lblBoatIDX = new Label(this.boatIDX + "",
-                skin);
+                skin,"small");
         this.lblName = new Label(this.name + "",
-                skin);
+                skin,"small");
         this.lblLength = new Label(this.length + "",
-                skin);
+                skin,"small");
 
         this.lblDamage = new Label(this.damage + "",
-                skin);
+                skin,"small");
 
         this.lblStatus = new Label(this.status,
-                skin);
+                skin,"small");
 
         this.lblCoordinates = new Label("",
-                skin);
+                skin,"small");
 
 
         this.add(this.lblBoatIDX)
@@ -71,11 +72,20 @@ public class HUD extends Table implements Observer {
                 .width(200);
         this.row();
         this.pad(1);
+    }
+
+
+    public void reset(){
+        this.lblCoordinates.setText("");
+        this.lblDamage.setText("");
+        this.lblStatus.setText("");
+        this.damage=0;
 
 
     }
-    public void resetCoordinate(){
-        this.lblCoordinates.setText("");
+
+    public void  resetDamage(){
+        this.lblDamage.setText("");
     }
     public void addCoordinate(String coordinate){
          String  textFromLabel=this.lblCoordinates.getText().toString();

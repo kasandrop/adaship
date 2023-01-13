@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.SnapshotArray;
@@ -352,7 +351,8 @@ public class SetUpPlayerScreen extends ScreenAdapter {
 
     private void onSaveClicked() {
         this.player.setPlayerSetup(PlayerSetup.Ready);
-        this.player.setBoard(this.board);
+        this.player.setShipBoard(this.board);
+        this.player.setTargetBoard(new Board(GameConfig.getInstance().getBoardWidth(), GameConfig.getInstance().getBoardHeight()));
         this.game.setScreen(new MenuScreen(this.game));
 
     }
