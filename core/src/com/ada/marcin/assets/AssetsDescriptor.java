@@ -26,6 +26,4 @@ public class AssetsDescriptor {
     public static final AssetDescriptor<Skin> UISKIN =
             new AssetDescriptor<Skin>(AssetPaths.UI_JSON,
                     Skin.class);
-
-
 }

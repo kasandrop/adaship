@@ -1,13 +1,13 @@
 package com.ada.marcin.model;
 
 //Point in a cartesian coordinate system
+
 import java.util.Objects;
 
 public class Coordinate {
 
     private final int x;
     private final int y;
-    private final String data;
 
     private int hashCode;
 
@@ -15,9 +15,28 @@ public class Coordinate {
                       int y) {
         this.x = x;
         this.y = y;
-        this.data = x + "-" + y;
         this.hashCode = Objects.hash(this.x,
                 this.y);
+    }
+
+    public static String columnLabel(int column) {
+        column--;
+
+        //convert col to label; valid range 0 to 702 (ZZ), col's only relates to A..ZZ
+        char[] reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+        String label = "";
+
+        if (column >= 0 && column <= 80) { //check valid range
+            int x = column / 26; //check range; 0 if A..Z
+            if (x == 0) {
+                label = reference[column] + "";
+            } else {
+                column = column - (x * 26);
+                label = reference[(x - 1)] + "";
+                label += reference[column];
+            }
+        }
+        return label;
     }
 
     @Override
@@ -35,10 +54,6 @@ public class Coordinate {
         return this.hashCode;
     }
 
-    public String getData() {
-        return data;
-    }
-
     public int getX() {
         return this.x;
     }
@@ -50,28 +65,5 @@ public class Coordinate {
     @Override
     public String toString() {
         return this.getY() + Coordinate.columnLabel(this.getX());
-    }
-
-
-    public static String columnLabel(int column) {
-        column--;
-
-        //convert col to label; valid range 0 to 702 (ZZ), col's only relates to A..ZZ
-        char[] reference = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
-        String label = "";
-
-        if (column >= 0 && column <= 80) { //check valid range
-            int x = column / 26; //check range; 0 if A..Z
-            if (x == 0) {
-                label = reference[column] + "";
-
-            } else {
-                column = column - (x * 26);
-                label = reference[(x - 1)] + "";
-                label += reference[column];
-            }
-
-        }
-        return label;
     }
 }

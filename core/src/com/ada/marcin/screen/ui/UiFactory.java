@@ -27,14 +27,13 @@ public class UiFactory {
 
     public static final Logger logger = new Logger(UiFactory.class.getName(),
             Logger.DEBUG);
-
-    private Skin skin;
+    private static Vector2 vector2 = new Vector2();
     private final AssetManager assetManager;
     private final TextureAtlas gamePlayAtlas;
+    private final Skin skin;
     private TextureAtlas atlas;
     private TextureRegion backgroundRegion;
     private TextureRegion panelRegion;
-    private static Vector2 vector2 = new Vector2();
 
     public UiFactory(AssetManager assetManager) {
         this.assetManager = assetManager;
@@ -44,22 +43,20 @@ public class UiFactory {
     }
 
 
-    public  ShipView shipViewFactory(int myIndex,
-                                     int length,
-                                     String name,
-                                     TextureRegion unitViewDamagedTexture,
-                                     TextureRegion unitViewTexture,
-                                     TextureRegion regionReady,
-                                     int cellSize) {
+    public ShipView shipViewFactory(int myIndex,
+                                    int length,
+                                    String name,
+                                    TextureRegion unitViewDamagedTexture,
+                                    TextureRegion unitViewTexture,
+                                    TextureRegion regionReady,
+                                    int cellSize) {
         return new ShipView(myIndex,
                 length,
                 name,
                 Direction.Horizontal,
                 unitViewDamagedTexture,
                 unitViewTexture,
-                regionReady,cellSize);
-
-
+                regionReady, cellSize);
     }
 
 
@@ -75,7 +72,7 @@ public class UiFactory {
 
                 if (i == 0 && j != 0) {
                     Label label = new Label(Coordinate.columnLabel(j),
-                            skin,"small");
+                            skin, "small");
                     table.add(label);
                 } else if (j == 0 && i != 0) {
 
@@ -87,18 +84,16 @@ public class UiFactory {
                 } else {
                     final GridUnit gridUnit = new GridUnit(getGridViewTexture(),
                             j,
-                            i,cellsize);
+                            i, cellsize);
                     gridUnit.setTouchable(touchable);
 
-                    gridUnit.setName(new Coordinate(j,i).toString());
+                    gridUnit.setName(new Coordinate(j, i).toString());
                     table.add(gridUnit)
                             .space(2);
                 }
-
             }
         }
         return table;
-
     }
 
     public Table createTableForBackground() {
@@ -126,18 +121,17 @@ public class UiFactory {
     }
 
 
-    public  Table getButtons(List<TextButton> buttons) {
+    public Table getButtons(List<TextButton> buttons) {
         Table table = new Table();
-        for(TextButton textButton :buttons){
+        for (TextButton textButton : buttons) {
             table.add(textButton).fill().pad(10);
             table.row();
         }
 
         return table;
-
     }
 
-    public VerticalGroup ContainerWithShipView(Map<Integer,ShipView> shipViews) {
+    public VerticalGroup ContainerWithShipView(Map<Integer, ShipView> shipViews) {
         VerticalGroup verticalGroup = new VerticalGroup();
         for (Map.Entry<Integer, ShipView> entry : shipViews.entrySet()) {
             //System.out.println(entry.getKey() + ":" + entry.getValue());
@@ -147,10 +141,9 @@ public class UiFactory {
         verticalGroup.pad(10);
         verticalGroup.pack();
         return verticalGroup;
-
     }
 
-    public  Container<ShipView> getContainer(ShipView shipView) {
+    public Container<ShipView> getContainer(ShipView shipView) {
         Container<ShipView> container = new Container<>();
         container.background(getContainerBackground());
         container.size(GameConfig.CELL_SIZE * shipView.getLength() + shipView.getLength() * 2);
@@ -215,15 +208,14 @@ public class UiFactory {
         pixmapShip.setColor(color);
         pixmapShip.fill();
         return new TextureRegion(new Texture(pixmapShip));
-
     }
 
-    /**
+    /**  Randomly  returns cell from a table. Cell (gridUnit) contains Coordinate.
      * @param nameOfTable the name of the   table,which contains the GridUnit
-     * @param stage current stage
+     * @param stage       current stage
      * @return randomly returns a cell from the table
      */
-    public GridUnit getGridUnit(String nameOfTable, Stage stage) {
+    public GridUnit getGridUnitRandomly(String nameOfTable, Stage stage) {
         int xxRandom;
         int yyRandom;
         boolean isGridUnit = false;
@@ -248,10 +240,8 @@ public class UiFactory {
             if (randomActor instanceof GridUnit) {
                 isGridUnit = true;
             }
-
         } while (isGridUnit == false);
 
         return (GridUnit) randomActor;
     }
-
 }

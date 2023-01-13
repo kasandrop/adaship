@@ -6,5 +6,4 @@ public interface Observer {
 
     void notify(ShipEvent shipEvent,
                 String data);
-
 }

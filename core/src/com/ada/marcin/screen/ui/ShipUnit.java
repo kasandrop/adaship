@@ -4,16 +4,16 @@ import com.ada.marcin.common.RegionTextureNotSetException;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
 
+/**
+ * Visual Representation of the ship. ShipView consists of ShipUnits
+ */
 public class ShipUnit extends UnitActor {
-    protected TextureRegion regionNotDamaged;
-    protected TextureRegion regionDamaged;
-
-    //when placed correctly inside a grid
-    protected TextureRegion regionReady;
-
-
     public static final Logger logger = new Logger(ShipUnit.class.getName(),
             Logger.DEBUG);
+    protected TextureRegion regionNotDamaged;
+    protected TextureRegion regionDamaged;
+    //when placed correctly inside a grid
+    protected TextureRegion regionReady;
 
     public ShipUnit(TextureRegion regionDamaged,
                     TextureRegion regionNotDamaged,
@@ -49,6 +49,5 @@ public class ShipUnit extends UnitActor {
             throw new RegionTextureNotSetException("TextureRegion is not set.");
         }
         this.regionCurrent = regionNotDamaged;
-
     }
 }

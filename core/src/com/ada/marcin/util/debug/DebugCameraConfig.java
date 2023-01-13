@@ -140,7 +140,6 @@ public class DebugCameraConfig {
             logKey = getInputKeyValue(root,
                     LOG_KEY,
                     DEFAULT_LOG_KEY);
-
         } catch (Exception e) {
             log.error("Error loading " + FILE_PATH + " using defaults.",
                     e);

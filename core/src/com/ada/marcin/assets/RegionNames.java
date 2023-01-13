@@ -7,5 +7,4 @@ public class RegionNames {
     public static final String PANEL = "default-pane-noborder";
     public static final String PLAY = "play";
     public static final String PLAY_PRESSED = "playPressed";
-
 }

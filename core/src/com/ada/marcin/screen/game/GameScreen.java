@@ -33,26 +33,19 @@ public class GameScreen extends ScreenAdapter {
 
     public static final Logger logger = new Logger(GameScreen.class.getName(),
             Logger.DEBUG);
-
+    private static Vector2 vector2 = new Vector2();
     private final AdashipGame game;
     private final AssetManager assetManager;
     private Viewport viewport;
     private Stage stage;
-
     private Player player;
-
     private Player opponent;
-
-
     private TextButton nextButton;
     private TextButton autoButton;
-
     private TextButton menuButton;
-
     //focus camera functionality and   camera movements.
     // just for debugging purposes
     private DebugCameraController debugCameraController;
-    private static Vector2 vector2 = new Vector2();
     private Map<Integer, ShipView> shipViews = new HashMap<>();
     private List<HUD> huds = new ArrayList<>();
     private Skin skin;
@@ -69,11 +62,11 @@ public class GameScreen extends ScreenAdapter {
         this.opponent.setShipLength(getShipsLength());
     }
 
-    private int[] getShipsLength(){
+    private int[] getShipsLength() {
         int[] length;
-        length=new int[GameConfig.getInstance().getBoats().size()];
-        for(Boat boat :GameConfig.getInstance().getBoats()){
-            length[boat.getBoatIdx()]=boat.getLength();
+        length = new int[GameConfig.getInstance().getBoats().size()];
+        for (Boat boat : GameConfig.getInstance().getBoats()) {
+            length[boat.getBoatIdx()] = boat.getLength();
         }
         return length;
     }
@@ -126,7 +119,6 @@ public class GameScreen extends ScreenAdapter {
         initUi();
 
         updatePlayer();
-
     }
 
 
@@ -140,24 +132,18 @@ public class GameScreen extends ScreenAdapter {
                 .getBoats()) {
             HUD hud = this.stage.getRoot().findActor(boat.getBoatIdx() + "HUD");
             hud.reset();
-          //  hud.resetDamage();
         }
-
         this.updatePlayer();
-
     }
 
     private void updatePlayer() {
-        // this.huds.clear();
-
-
-        logger.debug("Player:" + this.player.getName());
         Label title = this.stage.getRoot().findActor("title");
         title.setText(this.player.getName());
+        if(this.player.isAi){
+            title.setText("Computer");
+        }
         Table shipboard = this.stage.getRoot().findActor("Shipboard");
-//SnapshotArray is libgdx inner data type .SnapshotArray    allows to change  its  element during iteration.
-        // SnapshotArray<Actor>gridUnits=   shipboard.getChildren();
-        //resetting grid units
+
         for (Actor actor : shipboard.getChildren()) {
             if (actor instanceof GridUnit) {
                 ((GridUnit) actor).setRegionCurrent(getGridUnitTexture());
@@ -180,7 +166,6 @@ public class GameScreen extends ScreenAdapter {
             }
         }
 
-// the same for the targetboard
         Table targetBoard = this.stage.getRoot().findActor("TargetBoard");
 //SnapshotArray is libgdx inner data type .SnapshotArray    allows to change  its  element during iteration.
         // SnapshotArray<Actor>gridUnits=   shipboard.getChildren();
@@ -197,14 +182,17 @@ public class GameScreen extends ScreenAdapter {
             GridUnit gridUnit = targetBoard.findActor(name);
             CellContent cellContent = player.getTargetBoard().getValue(key);
             gridUnit.setTouchable(Touchable.disabled);
-            if(cellContent.getBoatIdx()==-1){
-                gridUnit.setRegionCurrent( getMissGridUnitTexture() );
-            }else if(this.player.isShipSunk(cellContent.getBoatIdx())){
+            if (cellContent.getBoatIdx() == -1) {
+                gridUnit.setRegionCurrent(getMissGridUnitTexture());
+            } else if (this.player.isShipSunk(cellContent.getBoatIdx())) {
 
                 gridUnit.setRegionCurrent(getGridUnitSunkTexture());
-            }else{
-                gridUnit.setRegionCurrent( getUnitViewDamagedTexture() );
+            } else {
+                gridUnit.setRegionCurrent(getUnitViewDamagedTexture());
             }
+        }
+        if(this.player.isAi){
+            onAutoClick();
         }
     }
 
@@ -243,10 +231,9 @@ public class GameScreen extends ScreenAdapter {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 Actor actor = event.getTarget();
                 if (actor instanceof GridUnit) {
-                    Coordinate coordinate=((GridUnit) actor).getCoordinate();
-                    torpedo(coordinate,(GridUnit)actor);
+                    Coordinate coordinate = ((GridUnit) actor).getCoordinate();
+                    torpedo(coordinate, (GridUnit) actor);
                 }
-
             }
 
             @Override
@@ -262,7 +249,7 @@ public class GameScreen extends ScreenAdapter {
 
         SplitPane splitAbout = new SplitPane(new ScrollPane(shipboard, skin, "default"), new ScrollPane(targetBoard, skin, "default"), false, skin, "default-horizontal");
         splitAbout.setSplitAmount(0.4f);
-        Label titleLabel = new Label(this.player.getName(), skin, "title");
+        Label titleLabel = new Label("Marcin", skin, "title");
         titleLabel.setName("title");
         titleLabel.setFontScale(2.2f);
         table.add(titleLabel).colspan(2).pad(26);
@@ -283,27 +270,25 @@ public class GameScreen extends ScreenAdapter {
                 (float) GameConfig.WINDOWS_HEIGHT / 2);
     }
 
-    private void torpedo(Coordinate coordinate,GridUnit gridUnit){
+    private void torpedo(Coordinate coordinate, GridUnit gridUnit) {
         //so player will only be able to use this coordinate once only
         gridUnit.setTouchable(Touchable.disabled);
         //check if it is a hit
-      int result= this.opponent.torpedoOpponent(coordinate);
-      this.player.saveMyTorpedoResult(coordinate,result);
-      if(result==-1){
-                gridUnit.setRegionCurrent(getMissGridUnitTexture());
-      }else  if(  this.player.isShipSunk(result)){
+        int result = this.opponent.torpedoOpponent(coordinate);
+        this.player.saveMyTorpedoResult(coordinate, result);
+        if (result == -1) {
+            gridUnit.setRegionCurrent(getMissGridUnitTexture());
+        } else if (this.player.isShipSunk(result)) {
 
-          gridUnit.setRegionCurrent(getGridUnitSunkTexture());
-      }else{
-          gridUnit.setRegionCurrent(getUnitViewDamagedTexture());
-      }
+            gridUnit.setRegionCurrent(getGridUnitSunkTexture());
+        } else {
+            gridUnit.setRegionCurrent(getUnitViewDamagedTexture());
+        }
         if (this.player.isPlayerAWinner()) {
-            logger.debug("You have won. Winner :" + this.player.getName());
             Label labelWinner = this.stage.getRoot().findActor("Winner");
             labelWinner.setVisible(true);
             labelWinner.setText("Winner:" + this.player.getName());
         }
-
     }
 
     public void onMenuButtonClick() {
@@ -311,7 +296,7 @@ public class GameScreen extends ScreenAdapter {
     }
 
     public void onAutoClick() {
-        GridUnit gridUnit = uiFactory.getGridUnit("TargetBoard", stage);
+        GridUnit gridUnit = uiFactory.getGridUnitRandomly("TargetBoard", stage);
         this.torpedo(gridUnit.getCoordinate(), gridUnit);
     }
 

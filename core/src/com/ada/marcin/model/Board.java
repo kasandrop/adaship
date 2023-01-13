@@ -8,36 +8,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-/*
-First screen with game set up, arranging the ships
-Then this screen
-3. will have to come up with the idea of persisting position of the ships between the screen
+/**
+ * Class will represent Shipboard or Target Board
  */
 public class Board {
-    //if shot torpedo was unsuccessful   then this variable is null;
-
-
-    // /
-    private Map<Coordinate, CellContent> board = new HashMap<Coordinate, CellContent>();
-//    private final List<Ship> ships = new ArrayList<Ship>();
 
     public static final Logger logger = new Logger(Board.class.getName(),
             Logger.DEBUG);
 
+    private Map<Coordinate, CellContent> board = new HashMap<Coordinate, CellContent>();
     //amount of columns and rows in a  board
-    private int columns;
-    private int rows;
+    private final int columns;
+    private final int rows;
 
 
-    public Board(int columns,int rows) {
+    public Board(int columns, int rows) {
 
         this.rows = rows;
         this.columns = columns;
-logger.debug("rows:"+this.rows+" columns:"+this.columns);
     }
 
-    //   coordinates  look like that  "10-2" where 10 is a row and 2 is a column
+    /**
+     * Having at least two coordinate points, function is able to determine the direction of the ShipView
+     * @param coordinates
+     * @return
+     */
     public static Direction checkDirection(List<Coordinate> coordinates) {
         int x1 = coordinates.get(0)
                 .getX();
@@ -49,25 +44,53 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
         return Direction.Horizontal;
     }
 
-    public void save(Coordinate coordinate,int boatIdx){
-        this.board.put(coordinate,new CellContent(boatIdx,1,true));
-
+    /**
+     * Used by  Target board to save the  shots
+     * @param coordinate
+     * @param boatIdx unique identifier of the Ship
+     */
+    public void save(Coordinate coordinate, int boatIdx) {
+        this.board.put(coordinate, new CellContent(boatIdx, true));
     }
 
-    public CellContent getValue(Coordinate key){
+    /**
+     *
+     * @param key  Coordinate on the Grid
+     * @return  CellContent packs information about the ship which occupies that coordinate
+     */
+    public CellContent getValue(Coordinate key) {
         return this.board.get(key);
     }
-    public int hit(Coordinate coordinate){
-      CellContent cellContent=this.getValue(coordinate);
-      if(cellContent==null){
-          return -1;
-      }
-      cellContent.setDamaged(true);
-      return cellContent.getBoatIdx();
+
+    /**
+     * Opponent  uses the function to check if there was a Ship on the  provided Coordinate
+     * @param coordinate
+     * @return  -1 if no ship is placed  on that Coordinate, Otherwise, unique identifier
+     * is returned,which describes the ship
+     */
+    public int hit(Coordinate coordinate) {
+        CellContent cellContent = this.getValue(coordinate);
+        if (cellContent == null) {
+            return -1;
+        }
+        cellContent.setDamaged(true);
+        return cellContent.getBoatIdx();
     }
-   public  Set<Coordinate> getKeys(){
+
+    /**
+     *
+     * @return  All  coordinates of the ships are returned (if Board represents Shipboard)
+     *            or coordinates of all shots if board represents Target board
+     */
+    public Set<Coordinate> getKeys() {
         return this.board.keySet();
     }
+
+    /**  Inner method
+     *
+     * @param coordinates  check if ShipView  can be placed on that Coordinates
+     * @return   true if   placement is allowed , otherwise false
+     */
     private boolean isPlacementAllowed(List<Coordinate> coordinates) {
         logger.debug("isPlacementAllowed()");
         Direction direction = Board.checkDirection(coordinates);
@@ -86,7 +109,6 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
                         xMin);
                 xMax = Math.max(myX,
                         xMax);
-
             }
             xMin = xMin - 1;
             xMax = xMax + 1;
@@ -120,7 +142,6 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
                         yMin);
                 yMax = Math.max(myY,
                         yMax);
-
             }
             yMin = yMin - 1;
             yMax = yMax + 1;
@@ -142,7 +163,6 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
                     xMax)) return false;
         }
         return true;
-
     }
 
     private boolean isCellOccupied(int yMin,
@@ -155,42 +175,27 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
                 if (board.containsKey(new Coordinate(xx, yy))) {
                     return true;
                 }
-                //logger.debug(xx+"-"+yy);
             }
         }
         return false;
     }
 
-
-    //   CellContent checkTorpedoShot(String target)  {
-//        CellContent cellContent = board.get(target);
-//        if (cellContent == null) {
-//            this.lastDamagedShip=null;
-//            return null;
-//        }
-//        cellContent.setDamaged(true);
-//        this.lastDamagedShip=this.getShip(cellContent.getShipType());
-//        if(this.lastDamagedShip==null)  return null ;
-//        this.lastDamagedShip.damageShip(cellContent.getIndexOfTheShip());
-//        return cellContent;
-
-    //   }
-
-
+    /**
+     *
+     * @param shipView  ShipViews can not overlap, nor can be placed one next to the other.
+     *                  If the rules are satisfied then
+     * @return  true if placement was successful, false otherwise
+     */
     public boolean placeShipOnTheGrid(ShipView shipView) {
         if (!isPlacementAllowed(shipView.getCoordinates())) {
             logger.debug("Placement not allowed");
             return false;
         }
-        int index = shipView.getLength() - 1;
         for (Coordinate coordinate : shipView.getCoordinates()) {
 
             board.put(coordinate,
                     new CellContent(shipView.getShipType(),
-                            index,
                             false));
-            index--;
-
         }
         return true;
     }
@@ -201,7 +206,6 @@ logger.debug("rows:"+this.rows+" columns:"+this.columns);
             board.remove(coordinate);
         }
         logger.debug("number of elements   after deletion :" + board.size());
-
     }
 
     public void clear() {

@@ -1,20 +1,16 @@
 package com.ada.marcin.screen.ui;
 
 import com.ada.marcin.model.Coordinate;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Logger;
 
 public class GridUnit extends UnitActor {
 
 
-    private Coordinate coordinate;
-    private TextureRegion spareTexture;
-
     public static final Logger logger = new Logger(GridUnit.class.getName(),
             Logger.DEBUG);
+    private final Coordinate coordinate;
+    private TextureRegion spareTexture;
 
     public GridUnit(TextureRegion textureRegion,
                     int x,
@@ -24,7 +20,6 @@ public class GridUnit extends UnitActor {
         this.regionCurrent = textureRegion;
         this.coordinate = new Coordinate(x,
                 y);
-
     }
 
 
@@ -32,7 +27,6 @@ public class GridUnit extends UnitActor {
     public void setRegionCurrent(TextureRegion regionCurrent) {
         super.setRegionCurrent(regionCurrent);
     }
-
 
 
     public int getGridX() {
