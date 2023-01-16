@@ -103,7 +103,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 if (aiButton.isChecked()) {
                     player.setAi(true);
-                  onAIclick();
+                  onAIClick();
                 }else{
                     logger.debug("unchecked:" + actor.toString());
                     player.setAi(false);
@@ -134,7 +134,7 @@ public class SetUpPlayerScreen extends ScreenAdapter {
         //logger.debug("origin x,y="+shipView.getWidth()/2+"  "+shipView.getHeight()/2);
     }
 
-    private void onAIclick() {
+    private void onAIClick() {
 
         // onResetClicked();
 
